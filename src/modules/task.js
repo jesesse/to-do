@@ -1,6 +1,6 @@
-const Task = (title,  priority) => {
+const Task = (title,  priority,  dueDate) => {
 
-    return { title,  priority };
+    return { title,  priority, dueDate };
 
 }
 
