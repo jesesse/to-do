@@ -28,6 +28,8 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'TO-DO',
+            template: './src/index.html',
+            filename: './index.html' 
         }),
     ],
     devtool: 'inline-source-map',

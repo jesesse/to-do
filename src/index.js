@@ -1,3 +1,4 @@
-import { initialize } from "./modules/UI/UI";
+import { loadHomePage } from "./modules/UI";
 import './styles/main.css';
-initialize();
+
+loadHomePage();
