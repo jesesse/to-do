@@ -1,4 +1,4 @@
-import { loadHomePage } from "./modules/UI";
+import { app } from "./modules/app";
 import './styles/main.css';
 
-loadHomePage();
+app.loadProjects();

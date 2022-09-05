@@ -35,16 +35,28 @@ body {
     flex-flow: column;
 }
 
-.nav-task-container,
-.nav-project-container {
+.nav-task-container{
     flex: 1;
     padding: 40px;
+    margin-bottom: 20px;
 }
 
-.today,
-.this-week,
-.this-month,
-.show-all {
+.add-project {
+    padding: 20px;
+    font-size: 20px;
+    margin: 0px 40px;
+    text-align: center;
+    background-color: rgba(0, 255, 0, 0.276);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px black;
+}
+
+.nav-project-container {
+    flex: 2;
+    padding: 0px 40px;
+}
+
+.project {
     display: flex;
     align-items: center;
     font-size: 20px;
@@ -54,21 +66,9 @@ body {
     border-radius: 10px;
 }
 
-.today:hover,
-.this-week:hover,
-.this-month:hover,
-.show-all:hover {
+.project:hover {
     cursor: pointer;
     background-color: rgba(37, 60, 79, 0.65);
-}
-
-.add-project {
-    padding: 20px;
-    font-size: 20px;
-    text-align: center;
-    background-color: rgba(0, 255, 0, 0.276);
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px black;
 }
 
 .add-project:hover {
@@ -123,4 +123,8 @@ body {
     background-size: contain;
     height: 30px;
     width: 30px;
+}
+
+.task-modal{
+    display: none;
 }

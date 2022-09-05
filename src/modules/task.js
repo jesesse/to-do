@@ -1,6 +1,12 @@
-const Task = (title,  priority,  dueDate) => {
 
-    return { title,  priority, dueDate };
+const Task = (title, priority, dueDate, project) => {
+   
+    let projectName;
+    
+    if (!project == null || !project == "") projectName = project;
+    else projectName = ""
+
+    return { title, priority, dueDate, projectName };
 
 }
 
