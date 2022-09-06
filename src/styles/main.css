@@ -51,7 +51,7 @@ body {
     box-shadow: 0px 0px 10px black;
 }
 
-.nav-project-container {
+.nav-project-panel {
     flex: 2;
     padding: 0px 40px;
 }
@@ -126,5 +126,9 @@ body {
 }
 
 .task-modal{
+    display: flex;
+}
+
+.hidden {
     display: none;
 }

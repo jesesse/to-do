@@ -17,24 +17,27 @@
         <div class="nav-task-container">
             <div class="project">Today</div>
             <div class="project">This Week</div>
-            <div class="project">This Month</div>
             <div class="project">Show All</div>
         </div>
 
         <div class="add-project">Add a Project</div>
-        <div class="nav-project-container">
-            
+        <div class="project-modal hidden">
+            <input type="text" name="project-name" id="project-name">
+            <button class="create-project">Add a project</button>
+        </div>
+        <div class="nav-project-panel">
+
         </div>
 
     </div>
 
     <div class="main">
         <div class="container">
-            <h1>Today</h1>
-            <div class="task-container">
-                
+            <h1 class="project-header">Today</h1>
+            <div class="main-view">
+
             </div>
-            <div class="task-modal">
+            <div class="task-modal hidden">
                 <label for="title">
                     TITLE:
                     <input type="text" name="title" id="title">
@@ -43,7 +46,7 @@
                     PRIORITY:
                     <input type="text" name="priority" id="priority">
                 </label>
-                 <input type="date" name="dueDate" id="dueDate">
+                <input type="date" name="dueDate" id="dueDate">
 
                 <button class="create-task">CREATE A TASK</button>
             </div>

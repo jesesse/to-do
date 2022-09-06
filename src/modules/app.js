@@ -1,15 +1,21 @@
 import { Task } from "./task";
 import { UI } from "./UI";
-import { format } from "date-fns";
 
 const app = (function () {
 
     let _taskList = [];
+    let _projectList = [];
      
+    //DECALRE ALL CLICKABLE UI ELEMENTS
     let addTaskBtn = document.querySelector('.add-task');
     let createTaskBtn = document.querySelector('.create-task');
+    let addProjectBtn = document.querySelector('.add-project');
+    let createProjectBtn = document.querySelector('.create-project');
 
+    // SET ALL EVENT LISTENERS
+    addProjectBtn.addEventListener("click", UI.toggleProjectCreationModal);
     addTaskBtn.addEventListener("click", UI.toggleTaskCreationModal);
+    createProjectBtn.addEventListener("click", createProject);
     createTaskBtn.addEventListener("click", createTask);
 
     function loadProjects() {
@@ -19,21 +25,36 @@ const app = (function () {
         }
     }
 
+    function getProjects(){
+        return _projectList;
+    }
+
+    function getTasks(){
+        return _taskList;
+    }
+
     function createTask() {
         let title = document.getElementById("title").value;
         let priority = document.getElementById("priority").value;
-        let dueDate = getDate();
+        let dueDate = document.getElementById("dueDate").value;
+        let project;
 
-        let newTask = Task(title, priority, dueDate, "");
+        let newTask = Task(title, priority, dueDate, project);
         _taskList.push(newTask);
-        loadProjects();
         UI.toggleTaskCreationModal();
+        document.getElementById("dueDate").value = "";
+        UI.viewProjects();
+        
     }
 
-    function getDate() {
-        if (!document.getElementById("dueDate").value) return "";
-        else return format(new Date(document.getElementById("dueDate").value), 'dd/MM/yyyy')
+    function createProject(){
+        let projectName = document.getElementById("project-name").value;
+        _projectList.push(projectName);
+        UI.toggleProjectCreationModal();
+        UI.renderProjectPanel();
     }
+
+ 
 
 
     // //"this" refers to the button on the task container.
@@ -50,7 +71,7 @@ const app = (function () {
     // }
 
 
-     return { loadProjects, createTask }
+     return { loadProjects, createTask, getProjects, getTasks }
 
     
 })();
