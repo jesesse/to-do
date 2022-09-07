@@ -2,6 +2,11 @@ import { Project } from "./project";
 import { Task } from "./task";
 import { UI } from "./UI";
 
+import toDate from "date-fns/toDate";
+import isToday from "date-fns/isToday";
+import isThisWeek from "date-fns/isThisWeek";
+import parseISO from "date-fns/parseISO";
+
 const app = (function () {
 
     let _taskList = [];
@@ -12,7 +17,7 @@ const app = (function () {
     let createTaskBtn = document.querySelector('.create-task');
     let addProjectBtn = document.querySelector('.add-project');
     let createProjectBtn = document.querySelector('.create-project');
-    
+
 
     // SET ALL EVENT LISTENERS
     addProjectBtn.addEventListener("click", UI.toggleProjectCreationModal);
@@ -20,58 +25,70 @@ const app = (function () {
     createProjectBtn.addEventListener("click", createProject);
     createTaskBtn.addEventListener("click", createTask);
 
+
     //Updates EventHandlers on load page and every time new project is created
-    function updateEventHandlers(){
+    function updateProjectEventHandlers() {
         let projects = document.querySelectorAll('.project');
-        projects.forEach(project => project.addEventListener("click", getProject));
+        projects.forEach(project => project.addEventListener("click", viewProject));
     }
-    
+
     function loadProjects() {
         //createDefaultProjects if not in memory: eg. if local storageis empty
         loadDefaultProjects();
-        updateEventHandlers();
+        updateProjectEventHandlers();
     }
 
     function loadDefaultProjects() {
-        let today = Project("Today"); 
-        let week = Project("This Week"); 
-        let all = Project("Show All"); 
-        _projectList.push(today);
-        _projectList.push(week);
-        _projectList.push(all);
+        _projectList.push(Project("Today"));
+        _projectList.push(Project("This Week"));
+        _projectList.push(Project("Show All"));
     }
 
     function getProjects() {
         return _projectList;
     }
 
-    function getProject(e){
+    function viewProject(e) {
         let projectName = e.target.textContent;
-        let clickedProject = app.getProjects().find(project => project.name === projectName);
+        let clickedProject = getProjects().find(project => project.name === projectName);
+        UI.viewProject(clickedProject);
+
     }
 
-    function getTasks() {
-        return _taskList;
+    function getTasks(project) {
+        let tasks = _taskList.filter(task => task.projectName === project.name);
+        console.log(tasks);
+        console.log(_taskList);
+        return tasks;
     }
 
     function createTask() {
         let title = document.getElementById("title").value;
         let priority = document.getElementById("priority").value;
         let dueDate = document.getElementById("dueDate").value;
-        let project = document.querySelector('.project-header').textContent;
+        let projectName = document.querySelector('.project-header').textContent;
 
-        let newTask = Task(title, priority, dueDate, project);
+        if (projectName == "Today" || projectName == "This Week" || projectName == "Show All") {
+            if (isToday((parseISO(dueDate)))) projectName = "Today";
+            else if (isThisWeek((parseISO(dueDate)))) projectName = "This Week";
+            else projectName = "Show All";
+        } 
+        
+        let newTask = Task(title, priority, dueDate, projectName);
         _taskList.push(newTask);
 
-        UI.toggleTaskCreationModal();
-        UI.viewProject(newTask.project);
+        UI.toggleTaskCreationModal(); 
+
+        
+        UI.viewProject(getProjects().find(project => project.name === projectName));
     }
 
     function createProject() {
 
         let projectNameInput = document.getElementById("project-name").value;
         if (projectNameInput == "" || projectNameInput == null) return;
-        let newProject = Project(projectNameInput); 
+
+        let newProject = Project(projectNameInput);
         _projectList.push(newProject);
 
         UI.toggleProjectCreationModal();
@@ -80,7 +97,7 @@ const app = (function () {
     }
 
 
-    return { loadProjects, createTask, getProjects, getProject, getTasks, updateEventHandlers }
+    return { loadProjects, createTask, getProjects, getTasks, updateProjectEventHandlers }
 
 
 })();

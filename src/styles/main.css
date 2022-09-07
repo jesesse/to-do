@@ -108,9 +108,10 @@ body {
 
 .task {
     display: flex;
+    font-size: 1.5rem;
     border-radius: 10px;
     margin: 20px;
-    padding: 0 20px;
+    padding: 10px 20px;
     align-items: center;
     justify-content: space-between;
     background-color: rgb(59, 60, 67);
