@@ -13,6 +13,8 @@ const UI = (function () {
 
 
     function toggleProjectCreationModal() {
+        if (!document.getElementById("dueDate").value == "") document.getElementById("dueDate").value = "";
+
         let addProjectBtn = document.querySelector('.add-project');
         let projectModal = document.querySelector('.project-modal');
         addProjectBtn.classList.toggle('hidden');
@@ -25,42 +27,62 @@ const UI = (function () {
         while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild);
 
         for (let i = 0; i < app.getProjects().length; i++) {
+            if( app.getProjects()[i].name == "Today" ||
+                app.getProjects()[i].name == "This Week" ||
+                app.getProjects()[i].name == "Show All") continue;  
+
             let newProjectContainer = document.createElement('div');
             newProjectContainer.classList.add('project');
-            newProjectContainer.textContent = app.getProjects()[i];
+            newProjectContainer.setAttribute('id', newProjectContainer.textContent);
+            newProjectContainer.textContent = app.getProjects()[i].name;
             projectPanel.appendChild(newProjectContainer);
+            app.updateEventHandlers()
         }
     }
 
-    function viewProjects() {
-        let mainView = document.querySelector('.main-view');
-        while (mainView.lastChild) mainView.removeChild(mainView.lastChild);
+    function viewProject(project) {
 
-        for (let i = 0; i < app.getTasks().length; i++) {
-            let title = document.createElement('div');
-            let priority = document.createElement('div')
-            let dueDate = document.createElement('div');
+        let projectHeader = document.querySelector('.project-header');
+        projectHeader.textContent = project.name;
 
-            title.textContent = app.getTasks()[i].title;
-            priority.textContent = app.getTasks()[i].priority;
-            dueDate.textContent = app.getTasks()[i].dueDate;
+        // let projectName = e.target.textContent;
+        // let clickedProject = app.getProjects().find(project => project.name === projectName);
+        
+        // let projectHeader = document.querySelector('.project-header');
+        // projectHeader.textContent = clickedProject.name;
 
-            let taskCard = document.createElement('div');
-            taskCard.classList.add('task');
 
-            taskCard.appendChild(title);
-            taskCard.appendChild(priority);
-            taskCard.appendChild(dueDate);
 
-            mainView.appendChild(taskCard);
-        }
+
+
+
+        // let mainView = document.querySelector('.main-view');
+        // while (mainView.lastChild) mainView.removeChild(mainView.lastChild);
+
+        // for (let i = 0; i < app.getTasks().length; i++) {
+        //     let title = document.createElement('div');
+        //     let priority = document.createElement('div')
+        //     let dueDate = document.createElement('div');
+
+        //     title.textContent = app.getTasks()[i].title;
+        //     priority.textContent = app.getTasks()[i].priority;
+        //     dueDate.textContent = app.getTasks()[i].dueDate;
+
+        //     let taskCard = document.createElement('div');
+        //     taskCard.classList.add('task');
+
+        //     taskCard.appendChild(title);
+        //     taskCard.appendChild(priority);
+        //     taskCard.appendChild(dueDate);
+        //     mainView.appendChild(taskCard);
+        // }
     }
 
     return {
         toggleTaskCreationModal,
         toggleProjectCreationModal,
         renderProjectPanel,
-        viewProjects
+        viewProject
     }
 
 })();
