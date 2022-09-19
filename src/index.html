@@ -14,15 +14,15 @@
     </div>
 
     <div class="nav-bar">
-        <div class="nav-task-container">
-            <div class="project">Today</div>
-            <div class="project">This Week</div>
-            <div class="project">Show All</div>
+        <div class="tabs">
+            <div class="tab" id="today">Today</div>
+            <div class="tab" id="this-week">This Week</div>
+            <div class="tab" id="show-all">Show All</div>
         </div>
 
         <div class="add-project">Add a Project</div>
         <div class="project-modal hidden">
-            <input type="text" name="project-name" id="project-name">
+            <input type="text" name="project-name-input" id="project-name-input">
             <button class="create-project">Add a project</button>
         </div>
         <div class="nav-project-panel">
@@ -33,10 +33,14 @@
 
     <div class="main">
 
-            <h1 class="project-header">Today</h1>
-            <div class="main-view">
+        <div class="project-view">
+
+            <h1 class="project-header"></h1>
+            
+            <div class="tasks-container">
 
             </div>
+
             <div class="task-modal hidden">
                 <label for="title">
                     TITLE:
@@ -44,13 +48,18 @@
                 </label>
                 <label for="priority">
                     PRIORITY:
-                    <input type="text" name="priority" id="priority">
+                    <select name="priority" id="priority">
+                        <option value="high">high</option>
+                        <option value="medium">medium</option>
+                        <option value="low">low</option>
+                    </select>
                 </label>
                 <input type="date" name="dueDate" id="dueDate">
-
                 <button class="create-task">CREATE A TASK</button>
             </div>
+            
             <div class="add-task">+</div>
+        </div>
 
     </div>
 

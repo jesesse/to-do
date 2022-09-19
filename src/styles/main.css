@@ -35,7 +35,7 @@ body {
     flex-flow: column;
 }
 
-.nav-task-container{
+.tabs{
     flex: 1;
     padding: 40px;
     margin-bottom: 20px;
@@ -56,7 +56,7 @@ body {
     padding: 0px 40px;
 }
 
-.project {
+.project, .tab {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -67,16 +67,17 @@ body {
     border-radius: 10px;
 }
 
+.project:hover,
+.tab:hover {
+    cursor: pointer;
+    background-color: rgba(37, 60, 79, 0.65);
+}
+
 .remove-project {
     background-image: url(../assets/svg/delete_FILL0_wght400_GRAD0_opsz48.svg);
     background-size: contain;
     height: 30px;
     width: 30px;
-}
-
-.project:hover {
-    cursor: pointer;
-    background-color: rgba(37, 60, 79, 0.65);
 }
 
 .add-project:hover {
@@ -92,10 +93,21 @@ body {
 }
 
 
-.main-view {
+.project-view {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
     box-shadow: 0 0 15px black;
     border-radius: 10px;
-    min-height: 200px;
+    padding: 20px;
+}
+
+.tasks-container {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
+    box-shadow: 0 0 15px black;
+    border-radius: 10px;
     padding: 20px;
 }
 
@@ -115,6 +127,8 @@ body {
     cursor: pointer;
 }
 
+
+
 .task-card {
     display: flex;
     box-sizing: border-box;
@@ -127,9 +141,6 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.696);
 }
 
-.task-card > div {
-    
-}
 
 .remove-task {
     cursor: pointer;
@@ -142,6 +153,7 @@ body {
 
 .task-modal{
     display: flex;
+    gap: 30px;
 }
 
 .hidden {

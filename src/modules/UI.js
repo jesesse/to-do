@@ -1,8 +1,45 @@
-import { Task } from "./task";
-import { Project } from "./project";
 import { app } from "./app";
 
 const UI = (function () {
+
+    let taskView = document.querySelector('.task-view');
+    let header = document.querySelector('.project-header');
+    let addTaskBtn = document.querySelector('.add-task');
+    let createTaskBtn = document.querySelector('.create-task');
+    let addProjectBtn = document.querySelector('.add-project');
+    let createProjectBtn = document.querySelector('.create-project');
+    let projectPanel = document.querySelector('.nav-project-panel');
+    let tabs = document.querySelector('.tabs');
+
+
+    projectPanel.addEventListener("click", (e) => {
+        if (e.target.className == "project") displayProject(e.target.textContent);
+        if (e.target.className == "remove-project") deleteProject(e.target.textContent);
+    });
+
+    tabs.addEventListener("click", (e) => {
+        if (e.target.className == "tab") displayTasksByDueDate(e.target.textContent);
+    });
+
+    addProjectBtn.addEventListener("click", toggleProjectCreationModal);
+    addTaskBtn.addEventListener("click", toggleTaskCreationModal);
+    createTaskBtn.addEventListener("click", createTask);
+    createProjectBtn.addEventListener("click", createProject);
+
+
+    function createTask(){
+        let title = document.getElementById('title').value;
+        let priority = document.getElementById('priority').value;
+        let dueDate = document.getElementById('dueDate').value;
+        let projectName = header.textContent;
+        app.createTask(title, priority, dueDate, projectName);
+        toggleTaskCreationModal();
+
+    }
+
+    function createProject(){
+        return;
+    }
 
     function toggleTaskCreationModal() {
         let addTaskBtn = document.querySelector('.add-task');
@@ -14,90 +51,36 @@ const UI = (function () {
         document.getElementById("dueDate").value = "";
     }
 
-
     function toggleProjectCreationModal() {
         let addProjectBtn = document.querySelector('.add-project');
         let projectModal = document.querySelector('.project-modal');
         addProjectBtn.classList.toggle('hidden');
         projectModal.classList.toggle('hidden');
-        document.getElementById("project-name").value = "";
+        document.getElementById("project-name-input").value = "";
+    }
+
+    function viewProject(project){
+        header.textContent = project.name
+    }
+
+    function displayTasks(tasks) {
+        console.log(tasks);
     }
 
 
-    //RENDERS PROJECT PANEL EVERYTIME A NEW PROJECT IS CREATED, OR EXISTING PROJECT DELETED
-    function renderProjectPanel() {
-        let projectPanel = document.querySelector('.nav-project-panel');
+    function displayTasksByDueDate(dueDate){
+        let tasks;
+        if (dueDate == "Today") tasks = app.getTodayTasks();
+        if (dueDate == "This Week") tasks = app.getThisWeekTasks();
+        if (dueDate == "Show All") tasks = app.getAllTasks();
 
-        while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild);
-
-        for (let i = 0; i < app.getProjects().length; i++) {
-            if (app.getProjects()[i].name == "Today" ||
-                app.getProjects()[i].name == "This Week" ||
-                app.getProjects()[i].name == "Show All") continue;
-
-            let newProjectContainer = document.createElement('div');
-            let removeButton = document.createElement('div');
-
-            newProjectContainer.classList.add('project');
-            removeButton.classList.add('remove-project');
-            
-            newProjectContainer.textContent = app.getProjects()[i].name;
-            
-            newProjectContainer.appendChild(removeButton);
-            projectPanel.appendChild(newProjectContainer);
-            
-            app.updateProjectEventHandlers()
-        }
+        header.textContent = dueDate;
+        displayTasks(tasks);
     }
 
-
-    function viewProject(project) {
-        if (project == undefined) project = app.getProjects().find(project => project.name === "Today"); 
-
-        let projectHeader = document.querySelector('.project-header');
-        projectHeader.textContent = project.name;
-
-        viewTasks(project);
-    }
-
-
-    function viewTasks(project){
-
-        let mainView = document.querySelector('.main-view');
-        while (mainView.lastChild) mainView.removeChild(mainView.lastChild);
-        if (project.getTasks().length == 0) return;
-
-        for (let i = 0; i < project.getTasks().length; i++) {
-            let taskCard = document.createElement('div');
-            let title = document.createElement('div');
-            let priority = document.createElement('div');
-            let projectName = document.createElement('div');
-            let dueDate = document.createElement('div');
-            let removeTask = document.createElement('div');
-
-            taskCard.classList.add('task-card');
-            removeTask.classList.add('remove-task');
-            
-            title.textContent = project.getTasks()[i].title;
-            priority.textContent = `PRIORITY: ${project.getTasks()[i].priority}`;
-            projectName.textContent = `PROJECT: ${project.getTasks()[i].projectName}`;
-            dueDate.textContent = `DUE DATE: ${project.getTasks()[i].dueDate}`;
-
-            taskCard.appendChild(title);
-            taskCard.appendChild(priority);
-            taskCard.appendChild(projectName);;
-            taskCard.appendChild(dueDate);
-            taskCard.appendChild(removeTask);
-            mainView.appendChild(taskCard);
-
-            app.updateTaskEventHandlers();
-        }
-    }
 
     return {
-        toggleTaskCreationModal,
-        toggleProjectCreationModal,
-        renderProjectPanel,
+        displayTasksByDueDate,
         viewProject
     }
 
