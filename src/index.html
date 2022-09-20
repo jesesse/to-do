@@ -21,6 +21,7 @@
         </div>
 
         <div class="add-project">Add a Project</div>
+
         <div class="project-modal hidden">
             <input type="text" name="project-name-input" id="project-name-input">
             <button class="create-project">Add a project</button>
@@ -51,11 +52,14 @@
                     <select name="priority" id="priority">
                         <option value="high">high</option>
                         <option value="medium">medium</option>
-                        <option value="low">low</option>
+                        <option value="low" selected="selected">low</option>
                     </select>
                 </label>
-                <input type="date" name="dueDate" id="dueDate">
-                <button class="create-task">CREATE A TASK</button>
+                <label for="dueDate">
+                    DUEDATE:
+                    <input type="date" name="dueDate" id="dueDate"> 
+                </label>
+                <button class="create-task">Create Task</button>
             </div>
             
             <div class="add-task">+</div>

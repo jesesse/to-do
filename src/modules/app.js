@@ -27,7 +27,7 @@ const app = (function () {
 
 
     function getProjects() {
-        return _projectList;    
+        return _projectList;
     }
 
 
@@ -35,7 +35,7 @@ const app = (function () {
         return project.getTasks();
     }
 
-    
+
     function getTodayTasks() {
         let todayTasks = [];
         _projectList.forEach(project => {
@@ -105,7 +105,20 @@ const app = (function () {
 
         let newTask = Task(title, priority, dueDate, projectName);
         getProject(projectName).addTask(newTask);
+
         UI.displayProject(getProject(projectName))
+    }
+
+
+    function deleteTask(taskTitle, projectName, header) {
+        if (!(projectName == header)) {
+            getProject("Default").deleteTask(taskTitle);
+            getProject(projectName).deleteTask(taskTitle);
+            UI.displayTasksByDueDate(header);
+        } else {
+            getProject(projectName).deleteTask(taskTitle);
+            UI.displayProject(getProject(projectName));
+        }
     }
 
 
@@ -124,7 +137,8 @@ const app = (function () {
         getThisWeekTasks,
         getAllTasks,
         createProject,
-        createTask
+        createTask,
+        deleteTask
     }
 
 })();

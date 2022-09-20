@@ -23,8 +23,14 @@ const UI = (function () {
     });
 
     taskView.addEventListener("click", (e) => {
-        if (e.target.className == "task-card") alert(e.target.textContent); // TÄMÄ AVAA TASKI ISOMMAKSI
-        if (e.target.className == "delete-task") alert(e.target.textContent); //TÄMÄ POISTAA TASKIN
+        if (e.target.className == "task-card" || 
+            e.target.className == "task-card task-card-expanded") toggleExpandTask(e.target); 
+        if (e.target.className == "delete-task") {
+            let taskName = e.target.parentNode.firstChild.textContent;
+            let projectName = e.target.parentNode.firstChild.nextSibling.nextSibling.nextSibling.textContent;
+            let dueDate = header.textContent;
+            app.deleteTask(taskName, projectName, dueDate);
+        }
     });
 
     addProjectBtn.addEventListener("click", toggleProjectCreationModal);
@@ -59,7 +65,6 @@ const UI = (function () {
         addTaskBtn.classList.toggle('hidden');
         taskModal.classList.toggle('hidden')
         document.getElementById("title").value = "";
-        document.getElementById("priority").value = "";
         document.getElementById("dueDate").value = "";
     }
 
@@ -77,9 +82,18 @@ const UI = (function () {
         displayTasks(app.getProjectTasks(project));
     }
 
-    function displayTasks(tasks) {
+   
+    function displayTasksByDueDate(dueDate) {
+        let tasks;
+        if (dueDate == "Today") tasks = app.getTodayTasks();
+        if (dueDate == "This Week") tasks = app.getThisWeekTasks();
+        if (dueDate == "Show All") tasks = app.getAllTasks();
+        header.textContent = dueDate;
+        displayTasks(tasks);
+    }
 
-        
+
+    function displayTasks(tasks) {
 
         while (taskView.lastChild) {
             taskView.removeChild(taskView.lastChild);
@@ -96,16 +110,14 @@ const UI = (function () {
             let deleteTaskBtn = document.createElement('div');
             
             title.textContent = tasks[i].title;
-
-            priority.textContent = tasks[i].priority;
-            if (tasks[i].priority == "high") priority.style.backgroundColor = "red";
-            if (tasks[i].priority == "medium") priority.style.backgroundColor = "yellow";
-            if (tasks[i].priority == "low") priority.style.backgroundColor = "green";
-
-            dueDate.textContent = tasks[i].dueDate;
-
-            if (tasks[i].projectName == "Default") projectName.textContent = "";
+            priority.textContent = `Priority: ${tasks[i].priority}`;
+            dueDate.textContent = `Due Date: ${tasks[i].dueDate}`;
+            if (tasks[i].projectName == "Default") projectName.textContent = ``;
             else projectName.textContent = tasks[i].projectName;
+
+            if (tasks[i].priority == "high") priority.style.color = "red";
+            if (tasks[i].priority == "medium") priority.style.color = "yellow";
+            if (tasks[i].priority == "low") priority.style.color = "green";
 
             deleteTaskBtn.classList.add('delete-task');
             newTaskCard.classList.add('task-card');
@@ -121,15 +133,6 @@ const UI = (function () {
     }
 
 
-    function displayTasksByDueDate(dueDate) {
-        let tasks;
-        if (dueDate == "Today") tasks = app.getTodayTasks();
-        if (dueDate == "This Week") tasks = app.getThisWeekTasks();
-        if (dueDate == "Show All") tasks = app.getAllTasks();
-        header.textContent = dueDate;
-        displayTasks(tasks);
-    }
-
     function renderProjectPanel() {
         while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild)
         for (let i = 0; i < app.getProjects().length; i++){
@@ -142,6 +145,12 @@ const UI = (function () {
             projectTab.appendChild(deleteProjectBtn);
             projectPanel.appendChild(projectTab);
         }
+    }
+
+    function toggleExpandTask(taskCard) {
+        taskCard.classList.toggle('task-card-expanded');
+        let description = document.createElement('div');
+        description.textContent = `Description:`
     }
 
 

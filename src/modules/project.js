@@ -2,6 +2,11 @@ const Project = (name) => {
 
     let _tasks = [];
 
+    function getTask(taskName){
+        let task = _tasks.find(task => task.name === taskName);
+        return task;
+    }
+
     function getTasks(){
         return _tasks;
     }
@@ -15,7 +20,7 @@ const Project = (name) => {
         _tasks.splice(_tasks.indexOf(task), 1);
     }
 
-    return { name, addTask, getTasks, deleteTask };
+    return { name, addTask, getTask, getTasks, deleteTask };
 
 }
 
