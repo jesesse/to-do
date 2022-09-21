@@ -104,31 +104,38 @@ const UI = (function () {
 
         for (let i = 0; i < tasks.length; i++) {
 
-            let newTaskCard = document.createElement('div'); 
-            newTaskCard.classList.add('task-card');       
-            let components = ['title', 'description', 'priority', 'due-date', 'project-name', 'delete-task'];
-
-            for (let i = 0; i < components.length; i++) {
-                let div = document.createElement('div');
-                div.classList.add(components[i]);
-                newTaskCard.appendChild(div);
-            }
-
-
-            newTaskCard.querySelector(".title").textContent = tasks[i].title;
-            newTaskCard.querySelector(".description").textContent = "";
-            newTaskCard.querySelector(".priority").textContent = tasks[i].priority;
-            newTaskCard.querySelector(".due-date").textContent = tasks[i].dueDate; 
-            newTaskCard.querySelector(".delete-task").textContent = "";
-            if (tasks[i].projectName == "Default") newTaskCard.querySelector(".project-name").textContent = "";
-            else newTaskCard.querySelector(".project-name").textContent = tasks[i].projectName;
-
-            if (tasks[i].priority == "high") newTaskCard.style.backgroundColor = "#7d2c2a";
-            if (tasks[i].priority == "medium") newTaskCard.style.backgroundColor = "#6a6f2e";
-            if (tasks[i].priority == "low") newTaskCard.style.backgroundColor = "#326248";
+            let newTaskCard = document.createElement('div');
+            newTaskCard.innerHTML = `<div class="task-card">
+            <div class="title">
+                <label class "title-label"></label>
+                <p class "title p"></p>
+            </div>
+            <div class="description">
+                <label class "title-label"></label>
+                <p class "title p"></p>
+            </div>
+            <div class="priority">
+                <label class "title-label"></label>
+                <p class "title p"></p>
+            </div>    
+            <div class="due-date">
+                <label class "title-label"></label>
+                <p class "title p"></p>
+            </div>
+            <div class="project-name">
+                <label class "title-label"></label>
+                <p class "title p"></p>
+            </div>
+            <div class="delete-task">
+                <label class "title-label"></label>
+                <p class "title p"></p>
+            </div>
+            </div>`
 
             taskView.appendChild(newTaskCard);
         }
+
+
     }
 
 
