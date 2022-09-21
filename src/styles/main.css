@@ -157,6 +157,10 @@ body {
     cursor:default;
 }
 
+.task-container {
+    display: flex;
+}
+
 
 .delete-task {
     background-image: url(../assets/svg/delete_FILL0_wght400_GRAD0_opsz48.svg);

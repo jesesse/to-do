@@ -7,38 +7,36 @@ const UI = (function () {
     let header = document.querySelector('.project-header');
     let addTaskBtn = document.querySelector('.add-task');
     let createTaskBtn = document.querySelector('.create-task');
+    let navBar = document.querySelector('.nav-bar');
     let addProjectBtn = document.querySelector('.add-project');
     let createProjectBtn = document.querySelector('.create-project');
     let projectPanel = document.querySelector('.nav-project-panel');
-    let tabs = document.querySelector('.tabs');
 
 
-    projectPanel.addEventListener("click", (e) => {
+    navBar.addEventListener("click", (e) => {
+        if (e.target.className == "tab") displayTasksByDueDate(e.target.textContent);
         if (e.target.className == "project") displayProject(app.getProject(e.target.textContent));
+        if (e.target.className == "add-project") toggleProjectCreationModal();
+        if (e.target.className == "create-project") createProject();
         if (e.target.className == "delete-project") app.deleteProject(e.target.previousSibling.textContent);
     });
 
-    tabs.addEventListener("click", (e) => {
-        if (e.target.className == "tab") displayTasksByDueDate(e.target.textContent);
-    });
+
 
     taskView.addEventListener("click", (e) => {
-        if (e.target.className == "task-card" || 
-            e.target.className == "task-card task-card-expanded") toggleExpandTask(e.target); 
+        if (e.target.className == "task-card" ||
+            e.target.className == "task-card task-card-expanded") toggleExpandTask(e.target);
         if (e.target.className == "delete-task") {
-            let taskName = e.target.parentNode.firstChild.textContent;
-            let projectName = e.target.parentNode.firstChild.nextSibling.nextSibling.nextSibling.textContent;
-            let dueDate = header.textContent;
-            app.deleteTask(taskName, projectName, dueDate);
+            let taskName = e.target.parentNode.querySelector('.title').textContent;
+            let projectName = e.target.parentNode.querySelector('.project-name').textContent;
+            let currentView = header.textContent;
+            app.deleteTask(taskName, projectName, currentView);
         }
     });
 
-    addProjectBtn.addEventListener("click", toggleProjectCreationModal);
+
     addTaskBtn.addEventListener("click", toggleTaskCreationModal);
     createTaskBtn.addEventListener("click", createTask);
-    createProjectBtn.addEventListener("click", createProject);
-
-
 
 
     function createTask() {
@@ -77,12 +75,15 @@ const UI = (function () {
     }
 
     function displayProject(project) {
-        if (project.name === "Default") header.textContent = header.textContent;
+        if (project.name === "Default") {
+            header.textContent = "Show All";
+            displayTasksByDueDate("Show All");
+        }
         else header.textContent = project.name;
         displayTasks(app.getProjectTasks(project));
     }
 
-   
+
     function displayTasksByDueDate(dueDate) {
         let tasks;
         if (dueDate == "Today") tasks = app.getTodayTasks();
@@ -100,34 +101,32 @@ const UI = (function () {
         }
 
         if (tasks.length == 0) taskView.textContent = "No tasks... ";
-        
+
         for (let i = 0; i < tasks.length; i++) {
-            let newTaskCard = document.createElement('div');
-            let title = document.createElement('div');
-            let priority = document.createElement('div');
-            let dueDate = document.createElement('div');
-            let projectName = document.createElement('div');
-            let deleteTaskBtn = document.createElement('div');
-            
-            title.textContent = tasks[i].title;
-            priority.textContent = `Priority: ${tasks[i].priority}`;
-            dueDate.textContent = `Due Date: ${tasks[i].dueDate}`;
-            if (tasks[i].projectName == "Default") projectName.textContent = ``;
-            else projectName.textContent = tasks[i].projectName;
 
-            if (tasks[i].priority == "high") priority.style.color = "red";
-            if (tasks[i].priority == "medium") priority.style.color = "yellow";
-            if (tasks[i].priority == "low") priority.style.color = "green";
+            let newTaskCard = document.createElement('div'); 
+            newTaskCard.classList.add('task-card');       
+            let components = ['title', 'description', 'priority', 'due-date', 'project-name', 'delete-task'];
 
-            deleteTaskBtn.classList.add('delete-task');
-            newTaskCard.classList.add('task-card');
+            for (let i = 0; i < components.length; i++) {
+                let div = document.createElement('div');
+                div.classList.add(components[i]);
+                newTaskCard.appendChild(div);
+            }
 
-            newTaskCard.appendChild(title);
-            newTaskCard.appendChild(priority);
-            newTaskCard.appendChild(dueDate);
-            newTaskCard.appendChild(projectName);
-            newTaskCard.appendChild(deleteTaskBtn);
-            
+
+            newTaskCard.querySelector(".title").textContent = tasks[i].title;
+            newTaskCard.querySelector(".description").textContent = "";
+            newTaskCard.querySelector(".priority").textContent = tasks[i].priority;
+            newTaskCard.querySelector(".due-date").textContent = tasks[i].dueDate; 
+            newTaskCard.querySelector(".delete-task").textContent = "";
+            if (tasks[i].projectName == "Default") newTaskCard.querySelector(".project-name").textContent = "";
+            else newTaskCard.querySelector(".project-name").textContent = tasks[i].projectName;
+
+            if (tasks[i].priority == "high") newTaskCard.style.backgroundColor = "#7d2c2a";
+            if (tasks[i].priority == "medium") newTaskCard.style.backgroundColor = "#6a6f2e";
+            if (tasks[i].priority == "low") newTaskCard.style.backgroundColor = "#326248";
+
             taskView.appendChild(newTaskCard);
         }
     }
@@ -135,7 +134,7 @@ const UI = (function () {
 
     function renderProjectPanel() {
         while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild)
-        for (let i = 0; i < app.getProjects().length; i++){
+        for (let i = 0; i < app.getProjects().length; i++) {
             if (app.getProjects()[i].name === "Default") continue;
             let projectTab = document.createElement('div')
             let deleteProjectBtn = document.createElement('div');
@@ -149,9 +148,12 @@ const UI = (function () {
 
     function toggleExpandTask(taskCard) {
         taskCard.classList.toggle('task-card-expanded');
-        let description = document.createElement('div');
-        description.textContent = `Description:`
+
+        taskCard.contentEditable = "true";
+
     }
+
+
 
 
     return {

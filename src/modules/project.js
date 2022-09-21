@@ -15,8 +15,8 @@ const Project = (name) => {
         _tasks.push(task);
     }
 
-    function deleteTask(taskName){
-        let task = _tasks.find(task => task.name === taskName);
+    function deleteTask(taskTitle){
+        let task = _tasks.find(task => task.title === taskTitle);
         _tasks.splice(_tasks.indexOf(task), 1);
     }
 

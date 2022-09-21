@@ -76,6 +76,13 @@ const app = (function () {
 
     function createProject(projectName) {
         if (projectName == "") return;
+        for (let i = 0; i < _projectList.length; i++) {
+            if (_projectList[i].name === projectName) {
+                alert("cannot be same name");
+                return;
+            }
+        }
+        
         let newProject = Project(projectName);
         _projectList.push(newProject);
         UI.renderProjectPanel();
@@ -103,6 +110,9 @@ const app = (function () {
             projectName == "This Week" ||
             projectName == "Show All") projectName = "Default";
 
+        if(!checkTitleValidity(projectName, title)) return;
+    
+
         let newTask = Task(title, priority, dueDate, projectName);
         getProject(projectName).addTask(newTask);
 
@@ -110,11 +120,13 @@ const app = (function () {
     }
 
 
-    function deleteTask(taskTitle, projectName, header) {
-        if (!(projectName == header)) {
+    function deleteTask(taskTitle, projectName, currentView) {
+        if (!(projectName == currentView) && projectName == "") {
             getProject("Default").deleteTask(taskTitle);
+            UI.displayTasksByDueDate(currentView);
+        } else if (!(projectName == currentView) && !(projectName == "")) {
             getProject(projectName).deleteTask(taskTitle);
-            UI.displayTasksByDueDate(header);
+            UI.displayTasksByDueDate(currentView);
         } else {
             getProject(projectName).deleteTask(taskTitle);
             UI.displayProject(getProject(projectName));
@@ -123,6 +135,17 @@ const app = (function () {
 
 
 
+
+    function checkTitleValidity(projectName, title) {
+        if (title == "") return false;
+        for (let i = 0; i < getProject(projectName).getTasks().length; i++) {
+            if (getProject(projectName).getTasks()[i].title === title) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 
 
