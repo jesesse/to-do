@@ -27,8 +27,8 @@ const UI = (function () {
         if (e.target.className == "task-card" ||
             e.target.className == "task-card task-card-expanded") toggleExpandTask(e.target);
         if (e.target.className == "delete-task") {
-            let taskName = e.target.parentNode.querySelector('.title').textContent;
-            let projectName = e.target.parentNode.querySelector('.project-name').textContent;
+            let taskName = e.target.parentNode.querySelector('.title-p').textContent;
+            let projectName = e.target.parentNode.querySelector('.project-name-p').textContent;
             let currentView = header.textContent;
             app.deleteTask(taskName, projectName, currentView);
         }
@@ -103,34 +103,36 @@ const UI = (function () {
         if (tasks.length == 0) taskView.textContent = "No tasks... ";
 
         for (let i = 0; i < tasks.length; i++) {
-
             let newTaskCard = document.createElement('div');
-            newTaskCard.innerHTML = `<div class="task-card">
-            <div class="title">
-                <label class "title-label"></label>
-                <p class "title p"></p>
-            </div>
-            <div class="description">
-                <label class "title-label"></label>
-                <p class "title p"></p>
-            </div>
-            <div class="priority">
-                <label class "title-label"></label>
-                <p class "title p"></p>
-            </div>    
-            <div class="due-date">
-                <label class "title-label"></label>
-                <p class "title p"></p>
-            </div>
-            <div class="project-name">
-                <label class "title-label"></label>
-                <p class "title p"></p>
-            </div>
-            <div class="delete-task">
-                <label class "title-label"></label>
-                <p class "title p"></p>
-            </div>
-            </div>`
+            newTaskCard.classList.add('task-card')
+
+            newTaskCard.innerHTML =            
+            `   <div class="title">
+                    <label class="title-label"></label>
+                    <p class="title-p">${tasks[i].title}</p>
+                </div>
+                <div class="description">
+                    <label class="description-label"></label>
+                    <p class="description-p"></p>
+                </div>
+                <div class="priority">
+                    <label class="priority-label"></label>
+                    <p class="priority-p">${tasks[i].priority}</p>
+                </div>    
+                <div class="due-date">
+                    <label class="due-date-label"></label>
+                    <p class="due-date-p">${tasks[i].dueDate}</p>
+                </div>
+                <div class="project-name">
+                    <label class="project-name-label"></label>
+                    <p class="project-name-p">${tasks[i].projectName}</p>
+                </div>
+                <div class="delete-task"></div>
+            `
+
+            if (tasks[i].priority === "low") newTaskCard.style.backgroundColor = "green";
+            if (tasks[i].priority === "medium") newTaskCard.style.backgroundColor = "yellow";
+            if (tasks[i].priority === "high") newTaskCard.style.backgroundColor = "red";
 
             taskView.appendChild(newTaskCard);
         }
@@ -156,7 +158,20 @@ const UI = (function () {
     function toggleExpandTask(taskCard) {
         taskCard.classList.toggle('task-card-expanded');
 
-        taskCard.contentEditable = "true";
+        taskCard.querySelector(".title-label").textContent = "Title: "
+        taskCard.querySelector(".title-p").contentEditable = "true";
+
+        taskCard.querySelector(".description-label").textContent = "Description: "
+        taskCard.querySelector(".description-p").contentEditable = "true";
+
+        taskCard.querySelector(".priority-label").textContent = "Priority: "
+        taskCard.querySelector(".priority-p").contentEditable = "true";
+
+        taskCard.querySelector(".due-date-label").textContent = "Due date: "
+        taskCard.querySelector(".due-date-p").contentEditable = "true";
+
+        taskCard.querySelector(".project-name-label").textContent = "Project: "
+        taskCard.querySelector(".project-name-p").contentEditable = "true";
 
     }
 
