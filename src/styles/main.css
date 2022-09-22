@@ -107,14 +107,13 @@ body {
     flex-flow: column nowrap;
     gap: 20px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.622);
-    border-radius: 10px;
+    order-radius: 10px;
     padding: 20px;
     background-color: rgb(30, 42, 52);
 }
 
 .task-view {
     display: flex;
-    flex-flow: column nowrap;
     gap: 20px;
 }
 
@@ -139,6 +138,7 @@ body {
 
 .task-card {
     display: flex;
+    flex-flow: column;
     box-sizing: border-box;
     font-size: 1.5rem;
     border-radius: 10px;
@@ -149,22 +149,28 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.696);
 }
 
-.task-id, .project-id {
+.task-card > div {
+    cursor: default;
+    display: flex;
+}
+
+.task-card > .task-id {
     display: none;
 }
 
+.task-card > .project-id {
+    display: none;
+}
+
+.task-card > .description {
+    display: none;
+}
 
 .task-card:hover {
     cursor: pointer;
 }
 
-.task-card > div {
-    cursor:default;
-}
 
-.task-container {
-    display: flex;
-}
 
 
 .delete-task {
@@ -182,7 +188,7 @@ body {
 }
 
 .project-modal{
-    height: 63px;
+    height: 72px;
     display: flex;
     flex-flow: column;
     gap: 15px;

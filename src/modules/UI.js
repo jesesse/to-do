@@ -8,8 +8,6 @@ const UI = (function () {
     let addTaskBtn = document.querySelector('.add-task');
     let createTaskBtn = document.querySelector('.create-task');
     let navBar = document.querySelector('.nav-bar');
-    let addProjectBtn = document.querySelector('.add-project');
-    let createProjectBtn = document.querySelector('.create-project');
     let projectPanel = document.querySelector('.nav-project-panel');
 
 
@@ -270,7 +268,7 @@ const UI = (function () {
         let editedDueDate = taskCard.querySelector(".edit-due-date").value;
         let editedProjectName = taskCard.querySelector(".edit-project").value;
         app.editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName);
-        collapseTask(taskCard);
+        //collapseTask(taskCard);
     }
 
     return {

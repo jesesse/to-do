@@ -143,12 +143,20 @@ const app = (function () {
         }
     }
 
-    function editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName){
+    function editTask(taskId, projectId, newTitle, newDescription, newPriority, newDueDate, newProjectName){
         let task = getProjectById(projectId).getTasks().find(task => task.id === taskId);
-        task.title = editedTitle;
-        task.description = editedDescription;
-        task.priority = editedPriority;
-        task.dueDate = editedDueDate;
+
+        if (!(getProjectById(projectId).name == newProjectName)) {
+            if (newProjectName == "") newProjectName = "Default";
+            task.projectName = newProjectName;
+            task.projectId = getProject(newProjectName).id;
+            getProject(newProjectName).addTask(task);
+            getProjectById(projectId).deleteTask(task.name);  
+        }
+        task.title = newTitle;
+        task.description = newDescription;
+        task.priority = newPriority;
+        task.dueDate = newDueDate;
 
         UI.displayProject(getProjectById(projectId));
     }
