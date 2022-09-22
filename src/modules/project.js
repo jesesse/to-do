@@ -1,4 +1,4 @@
-const Project = (name) => {
+const Project = (id, name) => {
 
     let _tasks = [];
 
@@ -20,7 +20,7 @@ const Project = (name) => {
         _tasks.splice(_tasks.indexOf(task), 1);
     }
 
-    return { name, addTask, getTask, getTasks, deleteTask };
+    return { id, name, addTask, getTask, getTasks, deleteTask };
 
 }
 

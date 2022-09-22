@@ -149,6 +149,11 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.696);
 }
 
+.task-id, .project-id {
+    display: none;
+}
+
+
 .task-card:hover {
     cursor: pointer;
 }
@@ -234,16 +239,27 @@ input, select, option{
     gap: 20px;
 }
 
-.task-card-expanded > div {
-    display: flex;
-    gap: 20px
+.task-card-expanded > .task-id {
+    display: none;
 }
 
-label, p {
+.task-card-expanded > .project-id {
+    display: none;
+}
+
+.task-card-expanded > div {
+    display: flex;
+    gap: 10px
+}
+
+.task-card-expanded > label, p {
     margin: 0;
 }
 
-
+.task-card-expanded > div > p {
+    min-width: 100px;
+    border-bottom: 1px solid black;
+}
 
 .hidden {
     display: none;

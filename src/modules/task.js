@@ -1,31 +1,38 @@
-const Task = (title, priority, dueDate, projectName) => {
+const Task = (id, projectId, title, description, priority, dueDate, projectName) => {
 
     function markComplete(){
         //is completed
     }
 
-    function changeTitle(newTitle) {
-        title = text;
+    function editTitle(newTitle) {
+        title = newTitle;
     }
 
-    function changePriority(newPriority) {
+    function editDescription(newDescription) {
+        description = newDescription;
+    }
+
+    function editPriority(newPriority) {
         priority = newPriority;
     }
 
-    function changedueDate(newDueDate) {
+    function editDueDate(newDueDate) {
         dueDate = newDueDate;
     }
 
-    function deleteTask(title){
-        //delete from storage?
-    }
-
-
     return {
+        id,
+        projectId,
         title,
+        description,
         priority,
         dueDate,
-        projectName
+        projectName,
+        markComplete,
+        editTitle,
+        editDescription,
+        editPriority,
+        editDueDate
     };
 }
 

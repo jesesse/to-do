@@ -6,15 +6,18 @@ import toDate from "date-fns/toDate";
 import isToday from "date-fns/isToday";
 import isThisWeek from "date-fns/isThisWeek";
 import parseISO from "date-fns/parseISO";
+import { v4 as uuidv4 } from 'uuid';
 
 
 const app = (function () {
 
     let _projectList = [];
+    
 
     function loadProjects() {
         //This is where there should be loading all the projects from localStorage, and if there is none, then create default Project:
-        let defaultProject = Project("Default");
+        let id = uuidv4();
+        let defaultProject = Project(id, "Default");
         _projectList.push(defaultProject);
         UI.renderProjectPanel();
         UI.displayTasksByDueDate("Today");
@@ -25,11 +28,14 @@ const app = (function () {
         return _projectList.find(project => project.name == projectName);
     }
 
+    function getProjectById(projectId){
+        return _projectList.find(project => project.id == projectId);
+    }
+    
 
     function getProjects() {
         return _projectList;
     }
-
 
     function getProjectTasks(project) {
         return project.getTasks();
@@ -82,8 +88,9 @@ const app = (function () {
                 return;
             }
         }
-        
-        let newProject = Project(projectName);
+
+        let id = uuidv4();
+        let newProject = Project(id, projectName);
         _projectList.push(newProject);
         UI.renderProjectPanel();
         UI.displayProject(newProject);
@@ -105,15 +112,18 @@ const app = (function () {
 
 
 
-    function createTask(title, priority, dueDate, projectName) {
+    function createTask(title, priority, description, dueDate, projectName) {
         if (projectName == "Today" ||
             projectName == "This Week" ||
             projectName == "Show All") projectName = "Default";
 
         if(!checkTitleValidity(projectName, title)) return;
     
+        let id = uuidv4();
+        let projectId = getProject(projectName).id;
 
-        let newTask = Task(title, priority, dueDate, projectName);
+        let newTask = Task(id, projectId, title, description, priority, dueDate, projectName);
+        
         getProject(projectName).addTask(newTask);
 
         UI.displayProject(getProject(projectName))
@@ -131,6 +141,12 @@ const app = (function () {
             getProject(projectName).deleteTask(taskTitle);
             UI.displayProject(getProject(projectName));
         }
+    }
+
+    function editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName){
+        let task = getProjectById(projectId).getTasks().find(task => task.id === taskId);
+        task.editDueDate(editedDueDate);
+        console.log(task);
     }
 
 
@@ -161,7 +177,8 @@ const app = (function () {
         getAllTasks,
         createProject,
         createTask,
-        deleteTask
+        deleteTask,
+        editTask
     }
 
 })();
