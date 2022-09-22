@@ -145,8 +145,12 @@ const app = (function () {
 
     function editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName){
         let task = getProjectById(projectId).getTasks().find(task => task.id === taskId);
-        task.editDueDate(editedDueDate);
-        console.log(task);
+        task.title = editedTitle;
+        task.description = editedDescription;
+        task.priority = editedPriority;
+        task.dueDate = editedDueDate;
+
+        UI.displayProject(getProjectById(projectId));
     }
 
 
