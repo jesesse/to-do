@@ -107,9 +107,14 @@ body {
     flex-flow: column nowrap;
     gap: 20px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.622);
-    order-radius: 10px;
-    padding: 20px;
+    border-radius: 10px;
+    padding: 40px;
     background-color: rgb(30, 42, 52);
+}
+
+
+.project-header {
+    margin-top: 0;
 }
 
 .task-view {
@@ -136,22 +141,30 @@ body {
 }
 
 
+
+
+
+
+
+
+
 .task-card {
     display: flex;
     flex-flow: column;
-    box-sizing: border-box;
+    gap: 10px;
     font-size: 1.5rem;
     border-radius: 10px;
-    padding: 10px 20px;
-    align-items: center;
+    padding: 30px 30px;
     justify-content: space-between;
-    background-color: rgb(59, 60, 67);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.696);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.852);
 }
+
 
 .task-card > div {
     cursor: default;
     display: flex;
+    width: max-content;
+    gap: 10px;
 }
 
 .task-card > .task-id {
@@ -159,6 +172,15 @@ body {
 }
 
 .task-card > .project-id {
+    display: none;
+}
+
+.task-card>.title{
+    align-self: center;
+    margin-bottom: 20px;
+}
+
+.task-card >.title>label {
     display: none;
 }
 
@@ -170,15 +192,13 @@ body {
     cursor: pointer;
 }
 
-
-
-
-.delete-task {
+.task-card>.delete-task {
     background-image: url(../assets/svg/delete_FILL0_wght400_GRAD0_opsz48.svg);
     background-size: contain;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
+    margin-top: 20px;
     filter: invert(100%);
 }
 
@@ -186,6 +206,52 @@ body {
     cursor: pointer;
     filter: invert(40%) sepia(89%) saturate(7199%) hue-rotate(352deg) brightness(97%) contrast(131%);
 }
+
+
+.task-card-expanded {
+    display: grid;
+    gap: 20px;
+}
+
+.task-card-expanded >.task-id {
+    display: none;
+}
+
+.task-card-expanded >.project-id {
+    display: none;
+}
+
+.task-card-expanded >.title>label {
+    display: flex;
+}
+
+.task-card-expanded >.description {
+    display: flex;
+}
+
+.task-card-expanded > div {
+    display: flex;
+    gap: 10px
+}
+
+.task-card-expanded > label, p {
+    margin: 0;
+}
+
+.task-card-expanded > div > p {
+    min-width: 100px;
+    border-bottom: 1px solid black;
+}
+
+
+
+
+
+
+
+
+
+
 
 .project-modal{
     height: 72px;
@@ -240,32 +306,7 @@ input, select, option{
     color: black;
 }
 
-.task-card-expanded {
-    display: grid;
-    gap: 20px;
-}
 
-.task-card-expanded > .task-id {
-    display: none;
-}
-
-.task-card-expanded > .project-id {
-    display: none;
-}
-
-.task-card-expanded > div {
-    display: flex;
-    gap: 10px
-}
-
-.task-card-expanded > label, p {
-    margin: 0;
-}
-
-.task-card-expanded > div > p {
-    min-width: 100px;
-    border-bottom: 1px solid black;
-}
 
 .hidden {
     display: none;

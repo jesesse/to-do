@@ -3,10 +3,8 @@ import { app } from "./app";
 
 const UI = (function () {
 
-    let taskView = document.querySelector('.task-view');
+    let projectView = document.querySelector('.project-view');
     let header = document.querySelector('.project-header');
-    let addTaskBtn = document.querySelector('.add-task');
-    let createTaskBtn = document.querySelector('.create-task');
     let navBar = document.querySelector('.nav-bar');
     let projectPanel = document.querySelector('.nav-project-panel');
 
@@ -20,8 +18,9 @@ const UI = (function () {
     });
 
 
-
-    taskView.addEventListener("click", (e) => {
+    projectView.addEventListener("click", (e) => {
+        if (e.target.className == "add-task") toggleTaskCreationModal();
+        if (e.target.className == "create-task") createTask();
         if (e.target.className == "task-card") expandTask(e.target);
         else if (e.target.className == "task-card task-card-expanded") editTask(e.target);
         if (e.target.className == "delete-task") {
@@ -31,10 +30,6 @@ const UI = (function () {
             app.deleteTask(taskName, projectName, currentView);
         }
     });
-
-
-    addTaskBtn.addEventListener("click", toggleTaskCreationModal);
-    createTaskBtn.addEventListener("click", createTask);
 
 
     function createTask() {
@@ -94,6 +89,7 @@ const UI = (function () {
 
 
     function displayTasks(tasks) {
+        let taskView = document.querySelector('.task-view');
 
         while (taskView.lastChild) {
             taskView.removeChild(taskView.lastChild);
@@ -116,10 +112,6 @@ const UI = (function () {
                     <label class="title-label"></label>
                     <p class="title-p">${tasks[i].title}</p>
                 </div>
-                <div class="description">
-                    <label class="description-label"></label>
-                    <p class="description-p">${tasks[i].description}</p>
-                </div>
                 <div class="priority">
                     <label class="priority-label">Priority:</label>
                     <p class="priority-p">${tasks[i].priority}</p>
@@ -131,6 +123,10 @@ const UI = (function () {
                 <div class="project-name">
                     <label class="project-name-label">Project:</label>
                     <p class="project-name-p">${projectName}</p>
+                </div>
+                <div class="description">
+                    <label class="description-label"></label>
+                    <p class="description-p">${tasks[i].description}</p>
                 </div>
                 <div class="delete-task"></div>
             `
@@ -159,6 +155,10 @@ const UI = (function () {
             projectPanel.appendChild(projectTab);
         }
     }
+
+
+
+
 
 
     function expandTask(taskCard) {
