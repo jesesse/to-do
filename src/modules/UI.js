@@ -69,11 +69,7 @@ const UI = (function () {
     }
 
     function displayProject(project) {
-        if (project.name === "Default") {
-            header.textContent = "Show All";
-            displayTasksByDueDate("Show All");
-        }
-        else header.textContent = project.name;
+        header.textContent = project.name;
         displayTasks(app.getProjectTasks(project));
     }
 

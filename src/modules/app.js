@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 const app = (function () {
 
     let _projectList = [];
-    
+
 
     function loadProjects() {
         //This is where there should be loading all the projects from localStorage, and if there is none, then create default Project:
@@ -28,10 +28,10 @@ const app = (function () {
         return _projectList.find(project => project.name == projectName);
     }
 
-    function getProjectById(projectId){
+    function getProjectById(projectId) {
         return _projectList.find(project => project.id == projectId);
     }
-    
+
 
     function getProjects() {
         return _projectList;
@@ -117,16 +117,18 @@ const app = (function () {
             projectName == "This Week" ||
             projectName == "Show All") projectName = "Default";
 
-        if(!checkTitleValidity(projectName, title)) return;
-    
+        if (!checkTitleValidity(projectName, title)) return;
+
         let id = uuidv4();
         let projectId = getProject(projectName).id;
-
         let newTask = Task(id, projectId, title, description, priority, dueDate, projectName);
-        
         getProject(projectName).addTask(newTask);
 
-        UI.displayProject(getProject(projectName))
+        if (projectName == "Default") {
+            if (isToday((parseISO(newTask.dueDate)))) UI.displayTasksByDueDate("Today");
+            else if (isThisWeek((parseISO(newTask.dueDate)))) UI.displayTasksByDueDate("This Week");
+            else UI.displayTasksByDueDate("Show All");
+        } else UI.displayProject(getProject(projectName))
     }
 
 
@@ -143,7 +145,7 @@ const app = (function () {
         }
     }
 
-    function editTask(taskId, projectId, newTitle, newDescription, newPriority, newDueDate, newProjectName){
+    function editTask(taskId, projectId, newTitle, newDescription, newPriority, newDueDate, newProjectName) {
         let task = getProjectById(projectId).getTasks().find(task => task.id === taskId);
 
         if (!(getProjectById(projectId).name == newProjectName)) {
@@ -151,14 +153,23 @@ const app = (function () {
             task.projectName = newProjectName;
             task.projectId = getProject(newProjectName).id;
             getProject(newProjectName).addTask(task);
-            getProjectById(projectId).deleteTask(task.name);  
+            getProjectById(projectId).deleteTask(task.name);
         }
         task.title = newTitle;
         task.description = newDescription;
         task.priority = newPriority;
         task.dueDate = newDueDate;
 
-        UI.displayProject(getProjectById(projectId));
+
+        // TARVITAAN CURRENT VIEW; ELI MISSÄ VIEWISSA TARKASTELEN PROJEKTIA / TASKEJA; JOTTA JOS VAIHDATA VIIKONPÄIVÄ VIEWISSÄ TASKIN TOISEEN PROJEKTIIN NIIN VIEWI SÄILYY SILTI VIIKONPÄIVÄSSÄ; EIKÄ SIIRRY VANHAN PROJEKTIN NÄKYMÄÄN JOSSA TASKI OLI. KIMURANTTIA!
+        if (getProjectById(projectId).name == "Default") {
+            if (isToday((parseISO(task.dueDate)))) UI.displayTasksByDueDate("Today");
+            else if (isThisWeek((parseISO(task.dueDate)))) UI.displayTasksByDueDate("This Week");
+            else UI.displayTasksByDueDate("Show All");
+        } else UI.displayProject(getProjectById(projectId));
+        
+
+
     }
 
 
