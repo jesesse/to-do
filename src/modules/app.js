@@ -101,7 +101,6 @@ const app = (function () {
     function deleteProject(projectName) {
         let project = getProject(projectName);
         _projectList.splice(_projectList.indexOf(project), 1);
-        console.log(_projectList)
         UI.renderProjectPanel();
         UI.displayTasksByDueDate("Today");
     }
@@ -149,15 +148,25 @@ const app = (function () {
     }
 
     function editTask(taskId, projectId, newTitle, newDescription, newPriority, newDueDate, newProjectName, currentView) {
-        let task = getProjectById(projectId).getTasks().find(task => task.id === taskId);
+        let project = getProjectById(projectId);
+        let task = project.getTaskById(taskId);
+        
+        // IF THE USER WANTS TO MOVE THE TASK TO A ANOTHER PROJECT; CHANGE THE PROJECTNAME AND PROJECTID OF THE TASK:
+        // RETURN IF THE PROJECT USER WANTS TO MOVE THE TASK ALREADY HAS A TASK OF THE SAME TITLE
+        if ((project.name != newProjectName)) {
+            let newProject = getProject(newProjectName);
+            if (!checkTitleValidity(newProjectName, newTitle)) {
+                alert('the new project already has a task with that name');
+                return;
+            }
 
-        if (!(getProjectById(projectId).name == newProjectName)) {
-            if (newProjectName == "") newProjectName = "Default";
             task.projectName = newProjectName;
-            task.projectId = getProject(newProjectName).id;
-            getProject(newProjectName).addTask(task);
-            getProjectById(projectId).deleteTask(task.name);
+            task.projectId = newProject.id;
+
+            newProject.addTask(task);
+            project.deleteTask(task);
         }
+
         task.title = newTitle;
         task.description = newDescription;
         task.priority = newPriority;
@@ -167,16 +176,6 @@ const app = (function () {
             UI.displayTasksByDueDate(currentView);
 
         } else UI.displayProject(getProjectById(projectId));
-
-        // TARVITAAN CURRENT VIEW; ELI MISSÄ VIEWISSA TARKASTELEN PROJEKTIA / TASKEJA; JOTTA JOS VAIHDATA VIIKONPÄIVÄ VIEWISSÄ TASKIN TOISEEN PROJEKTIIN NIIN VIEWI SÄILYY SILTI VIIKONPÄIVÄSSÄ; EIKÄ SIIRRY VANHAN PROJEKTIN NÄKYMÄÄN JOSSA TASKI OLI. KIMURANTTIA!
-        // if (getProjectById(projectId).name == "Default") {
-        //     if (isToday((parseISO(task.dueDate)))) UI.displayTasksByDueDate("Today");
-        //     else if (isThisWeek((parseISO(task.dueDate)))) UI.displayTasksByDueDate("This Week");
-        //     else UI.displayTasksByDueDate("Show All");
-        // } else UI.displayProject(getProjectById(projectId));
-        
-
-
     }
 
 

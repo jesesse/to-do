@@ -1,4 +1,4 @@
-import { areIntervalsOverlappingWithOptions } from "date-fns/fp";
+
 import { app } from "./app";
 
 const UI = (function () {
@@ -25,7 +25,7 @@ const UI = (function () {
         else if (e.target.className == "task-card task-card-expanded") editTask(e.target);
         if (e.target.className == "delete-task") {
             let taskId = e.target.parentNode.querySelector('.task-id').textContent;
-            let projectId = e.target.parentNode.querySelector('.project-id').textContent;            
+            let projectId = e.target.parentNode.querySelector('.project-id').textContent;
             let currentView = currentViewHeader.textContent;
             app.deleteTask(taskId, projectId, currentView);
         }
@@ -131,7 +131,7 @@ const UI = (function () {
 
             if (tasks[i].priority === "low") newTaskCard.querySelector('.priority-p').style.color = "#85A72A";
             if (tasks[i].priority === "medium") newTaskCard.querySelector('.priority-p').style.color = "#A7912A";
-            if (tasks[i].priority === "high") newTaskCard.querySelector('.priority-p').style.color = "#9C2222";  
+            if (tasks[i].priority === "high") newTaskCard.querySelector('.priority-p').style.color = "#9C2222";
         }
 
 
@@ -173,7 +173,7 @@ const UI = (function () {
         let editPriority = document.createElement('select');
         editPriority.classList.add('edit-priority');
 
-        for (let i = 0; i < 3; i++){
+        for (let i = 0; i < 3; i++) {
             let newOption = document.createElement('option');
             if (i == 0) newOption.text = "low"
             else if (i == 1) newOption.text = "medium"
@@ -201,7 +201,7 @@ const UI = (function () {
         let editProject = document.createElement('select');
         editProject.classList.add('edit-project');
 
-        for (let i = 0; i < app.getProjects().length; i++){
+        for (let i = 0; i < app.getProjects().length; i++) {
             let newOption = document.createElement('option');
             if (app.getProjects()[i].name == "Default") newOption.text = ""
             else newOption.text = app.getProjects()[i].name;
@@ -263,6 +263,7 @@ const UI = (function () {
         let editedPriority = taskCard.querySelector(".edit-priority").value;
         let editedDueDate = taskCard.querySelector(".edit-due-date").value;
         let editedProjectName = taskCard.querySelector(".edit-project").value;
+        if (editedProjectName === '') editedProjectName = 'Default'
         let currentView = currentViewHeader.textContent;
         app.editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName, currentView);
         //collapseTask(taskCard);
