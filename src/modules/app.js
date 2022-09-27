@@ -2,7 +2,6 @@ import { Project } from "./project";
 import { Task } from "./task";
 import { UI } from "./UI";
 
-import toDate from "date-fns/toDate";
 import isToday from "date-fns/isToday";
 import isThisWeek from "date-fns/isThisWeek";
 import parseISO from "date-fns/parseISO";
@@ -118,7 +117,7 @@ const app = (function () {
             currentView == "This Week" ||
             currentView == "Show All") {
                 projectName = "Default";
-            } else projectName = currentView;
+        } else projectName = currentView.slice(9);
             
 
         if (!checkTitleValidity(projectName, title)) return;

@@ -96,19 +96,28 @@ body {
 .main {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
-    background-color: rgba(33, 34, 37, 0.934);
+    background-color: rgba(28, 28, 31, 0.934);
     flex: 1;
     padding: 60px 60px;
 }
-
 
 .project-view {
     display: flex;
     flex-flow: column nowrap;
     gap: 20px;
+    border-radius: 10px;
+    padding: 0px 40px;
+    background-color: rgba(33, 34, 37, 0);
+}
+
+.project-display-style {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.622);
     border-radius: 10px;
-    padding: 40px;
+    margin: 20px;
+    padding: 40px 80px;
     background-color: rgb(30, 42, 52);
 }
 

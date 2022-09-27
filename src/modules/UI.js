@@ -4,7 +4,9 @@ import { app } from "./app";
 const UI = (function () {
 
     let mainView = document.querySelector('.main');
+    let projectView = document.querySelector('.project-view');
     let currentViewHeader = document.querySelector('.current-view');
+    let taskView = document.querySelector('.task-view');
     let navBar = document.querySelector('.nav-bar');
     let projectPanel = document.querySelector('.nav-project-panel');
 
@@ -69,8 +71,9 @@ const UI = (function () {
     }
 
     function displayProject(project) {
-        currentViewHeader.textContent = project.name;
+        currentViewHeader.textContent = `Project: ${project.name}`;
         let projectTasks = app.getProjectTasks(project);
+        toggleProjectDisplayStyle('project');
         displayTasks(projectTasks);
     }
 
@@ -81,12 +84,12 @@ const UI = (function () {
         if (dueDate == "This Week") tasks = app.getThisWeekTasks();
         if (dueDate == "Show All") tasks = app.getAllTasks();
         currentViewHeader.textContent = dueDate;
+        toggleProjectDisplayStyle('tab');
         displayTasks(tasks);
     }
 
 
     function displayTasks(tasks) {
-        let taskView = document.querySelector('.task-view');
 
         while (taskView.lastChild) {
             taskView.removeChild(taskView.lastChild);
@@ -268,6 +271,16 @@ const UI = (function () {
         app.editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName, currentView);
         //collapseTask(taskCard);
     }
+
+    function toggleProjectDisplayStyle(displayStyle) {
+        if (displayStyle == 'project') {
+            if (projectView.className == 'project-view') projectView.classList.add('project-display-style')
+        }
+        if (displayStyle == 'tab') {
+            if (projectView.className == 'project-view project-display-style') projectView.classList.remove('project-display-style');
+        }
+    }
+
 
     return {
         displayTasksByDueDate,
