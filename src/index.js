@@ -1,4 +1,4 @@
-import { app } from "./modules/app";
+import { loadProjects } from "./modules/app";
 import './styles/main.css';
 
-app.loadProjects();
+loadProjects();

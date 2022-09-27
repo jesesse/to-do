@@ -214,6 +214,7 @@ body {
 
 .task-card-expanded {
     display: grid;
+    padding: 50px;
     gap: 20px;
 }
 
