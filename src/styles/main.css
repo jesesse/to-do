@@ -149,6 +149,7 @@ body {
 
 
 .task-card {
+    background-color: rgb(59, 60, 67);
     display: flex;
     flex-flow: column;
     gap: 10px;

@@ -4,7 +4,7 @@ import { app } from "./app";
 const UI = (function () {
 
     let projectView = document.querySelector('.project-view');
-    let header = document.querySelector('.project-header');
+    let currentViewHeader = document.querySelector('.current-view');
     let navBar = document.querySelector('.nav-bar');
     let projectPanel = document.querySelector('.nav-project-panel');
 
@@ -26,7 +26,7 @@ const UI = (function () {
         if (e.target.className == "delete-task") {
             let taskName = e.target.parentNode.querySelector('.title-p').textContent;
             let projectName = e.target.parentNode.querySelector('.project-name-p').textContent;
-            let currentView = header.textContent;
+            let currentView = currentViewHeader.textContent;
             app.deleteTask(taskName, projectName, currentView);
         }
     });
@@ -37,7 +37,7 @@ const UI = (function () {
         let priority = document.getElementById('priority').value;
         let description = "";
         let dueDate = document.getElementById('dueDate').value;
-        let projectName = document.querySelector('.project-header').textContent;
+        let projectName = document.querySelector('.current-view').textContent;
         app.createTask(title, priority, description, dueDate, projectName);
         toggleTaskCreationModal();
     }
@@ -69,7 +69,7 @@ const UI = (function () {
     }
 
     function displayProject(project) {
-        header.textContent = project.name;
+        currentViewHeader.textContent = project.name;
         displayTasks(app.getProjectTasks(project));
     }
 
@@ -79,7 +79,7 @@ const UI = (function () {
         if (dueDate == "Today") tasks = app.getTodayTasks();
         if (dueDate == "This Week") tasks = app.getThisWeekTasks();
         if (dueDate == "Show All") tasks = app.getAllTasks();
-        header.textContent = dueDate;
+        currentViewHeader.textContent = dueDate;
         displayTasks(tasks);
     }
 
@@ -126,12 +126,13 @@ const UI = (function () {
                 </div>
                 <div class="delete-task"></div>
             `
-
-            if (tasks[i].priority === "low") newTaskCard.style.backgroundColor = "#85A72A";
-            if (tasks[i].priority === "medium") newTaskCard.style.backgroundColor = "#A7912A";
-            if (tasks[i].priority === "high") newTaskCard.style.backgroundColor = "#9C2222";
-
             taskView.appendChild(newTaskCard);
+
+            if (tasks[i].priority === "low") newTaskCard.querySelector('.priority-p').style.color = "#85A72A";
+            if (tasks[i].priority === "medium") newTaskCard.querySelector('.priority-p').style.color = "#A7912A";
+            if (tasks[i].priority === "high") newTaskCard.querySelector('.priority-p').style.color = "#9C2222";
+
+            
         }
 
 
