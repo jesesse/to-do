@@ -24,14 +24,10 @@ const UI = (function () {
         if (e.target.className == "task-card") expandTask(e.target);
         else if (e.target.className == "task-card task-card-expanded") editTask(e.target);
         if (e.target.className == "delete-task") {
-            let taskName = e.target.parentNode.querySelector('.title-p').textContent;
-            let projectName;
-            if (e.target.parentNode.className == "task-card task-card-expanded") {
-                projectName = e.target.parentNode.querySelector('.edit-project').value;
-            } else projectName = e.target.parentNode.querySelector('.project-name-p').textContent;
-            
+            let taskId = e.target.parentNode.querySelector('.task-id').textContent;
+            let projectId = e.target.parentNode.querySelector('.project-id').textContent;            
             let currentView = currentViewHeader.textContent;
-            app.deleteTask(taskName, projectName, currentView);
+            app.deleteTask(taskId, projectId, currentView);
         }
     });
 

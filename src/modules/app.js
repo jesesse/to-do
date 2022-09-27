@@ -137,17 +137,15 @@ const app = (function () {
     }
 
 
-    function deleteTask(taskTitle, projectName, currentView) {
-        if ((projectName != currentView) && (projectName == "")) {
-            getProject("Default").deleteTask(taskTitle);
+    function deleteTask(taskId, projectId, currentView) {
+        let taskToBeDeleted = getProjectById(projectId).getTasks().find(task => task.id === taskId);
+        getProjectById(projectId).deleteTask(taskToBeDeleted);
+       
+        if (currentView != getProjectById(projectId).name) {
             UI.displayTasksByDueDate(currentView);
-        } else if ((projectName != currentView) && (projectName != "")) {
-            getProject(projectName).deleteTask(taskTitle);
-            UI.displayTasksByDueDate(currentView);
-        } else {
-            getProject(projectName).deleteTask(taskTitle);
-            UI.displayProject(getProject(projectName));
-        }
+
+        } else UI.displayProject(getProjectById(projectId));
+
     }
 
     function editTask(taskId, projectId, newTitle, newDescription, newPriority, newDueDate, newProjectName, currentView) {
