@@ -3,7 +3,7 @@ import { app } from "./app";
 
 const UI = (function () {
 
-    let projectView = document.querySelector('.project-view');
+    let mainView = document.querySelector('.main');
     let currentViewHeader = document.querySelector('.current-view');
     let navBar = document.querySelector('.nav-bar');
     let projectPanel = document.querySelector('.nav-project-panel');
@@ -18,14 +18,18 @@ const UI = (function () {
     });
 
 
-    projectView.addEventListener("click", (e) => {
+    mainView.addEventListener("click", (e) => {
         if (e.target.className == "add-task") toggleTaskCreationModal();
         if (e.target.className == "create-task") createTask();
         if (e.target.className == "task-card") expandTask(e.target);
         else if (e.target.className == "task-card task-card-expanded") editTask(e.target);
         if (e.target.className == "delete-task") {
             let taskName = e.target.parentNode.querySelector('.title-p').textContent;
-            let projectName = e.target.parentNode.querySelector('.project-name-p').textContent;
+            let projectName;
+            if (e.target.parentNode.className == "task-card task-card-expanded") {
+                projectName = e.target.parentNode.querySelector('.edit-project').value;
+            } else projectName = e.target.parentNode.querySelector('.project-name-p').textContent;
+            
             let currentView = currentViewHeader.textContent;
             app.deleteTask(taskName, projectName, currentView);
         }
@@ -37,8 +41,8 @@ const UI = (function () {
         let priority = document.getElementById('priority').value;
         let description = "";
         let dueDate = document.getElementById('dueDate').value;
-        let projectName = document.querySelector('.current-view').textContent;
-        app.createTask(title, priority, description, dueDate, projectName);
+        let currentView = document.querySelector('.current-view').textContent;
+        app.createTask(title, priority, description, dueDate, currentView);
         toggleTaskCreationModal();
     }
 
@@ -70,7 +74,8 @@ const UI = (function () {
 
     function displayProject(project) {
         currentViewHeader.textContent = project.name;
-        displayTasks(app.getProjectTasks(project));
+        let projectTasks = app.getProjectTasks(project);
+        displayTasks(projectTasks);
     }
 
 
@@ -130,9 +135,7 @@ const UI = (function () {
 
             if (tasks[i].priority === "low") newTaskCard.querySelector('.priority-p').style.color = "#85A72A";
             if (tasks[i].priority === "medium") newTaskCard.querySelector('.priority-p').style.color = "#A7912A";
-            if (tasks[i].priority === "high") newTaskCard.querySelector('.priority-p').style.color = "#9C2222";
-
-            
+            if (tasks[i].priority === "high") newTaskCard.querySelector('.priority-p').style.color = "#9C2222";  
         }
 
 
@@ -264,7 +267,8 @@ const UI = (function () {
         let editedPriority = taskCard.querySelector(".edit-priority").value;
         let editedDueDate = taskCard.querySelector(".edit-due-date").value;
         let editedProjectName = taskCard.querySelector(".edit-project").value;
-        app.editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName);
+        let currentView = currentViewHeader.textContent;
+        app.editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName, currentView);
         //collapseTask(taskCard);
     }
 

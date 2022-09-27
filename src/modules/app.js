@@ -16,11 +16,7 @@ const app = (function () {
 
     function loadProjects() {
         //This is where there should be loading all the projects from localStorage, and if there is none, then create default Project:
-        let id = uuidv4();
-        let defaultProject = Project(id, "Default");
-        _projectList.push(defaultProject);
-        UI.renderProjectPanel();
-        UI.displayTasksByDueDate("Today");
+       createProject("Default");
     }
 
 
@@ -80,7 +76,7 @@ const app = (function () {
 
 
 
-    function createProject(projectName) {
+    function createProject(projectName) {  
         if (projectName == "") return;
         for (let i = 0; i < _projectList.length; i++) {
             if (_projectList[i].name === projectName) {
@@ -90,11 +86,16 @@ const app = (function () {
         }
 
         let id = uuidv4();
-        let newProject = Project(id, projectName);
+        let name = projectName;
+        let newProject = Project(id, name);
         _projectList.push(newProject);
+        
         UI.renderProjectPanel();
-        UI.displayProject(newProject);
+        if (projectName === 'Default') UI.displayTasksByDueDate('Today');
+        else UI.displayProject(newProject);
     }
+
+
 
 
     function deleteProject(projectName) {
@@ -112,10 +113,14 @@ const app = (function () {
 
 
 
-    function createTask(title, priority, description, dueDate, projectName) {
-        if (projectName == "Today" ||
-            projectName == "This Week" ||
-            projectName == "Show All") projectName = "Default";
+    function createTask(title, priority, description, dueDate, currentView) {
+        let projectName;
+        if (currentView == "Today" ||
+            currentView == "This Week" ||
+            currentView == "Show All") {
+                projectName = "Default";
+            } else projectName = currentView;
+            
 
         if (!checkTitleValidity(projectName, title)) return;
 
@@ -133,10 +138,10 @@ const app = (function () {
 
 
     function deleteTask(taskTitle, projectName, currentView) {
-        if (!(projectName == currentView) && projectName == "") {
+        if ((projectName != currentView) && (projectName == "")) {
             getProject("Default").deleteTask(taskTitle);
             UI.displayTasksByDueDate(currentView);
-        } else if (!(projectName == currentView) && !(projectName == "")) {
+        } else if ((projectName != currentView) && (projectName != "")) {
             getProject(projectName).deleteTask(taskTitle);
             UI.displayTasksByDueDate(currentView);
         } else {
@@ -145,7 +150,7 @@ const app = (function () {
         }
     }
 
-    function editTask(taskId, projectId, newTitle, newDescription, newPriority, newDueDate, newProjectName) {
+    function editTask(taskId, projectId, newTitle, newDescription, newPriority, newDueDate, newProjectName, currentView) {
         let task = getProjectById(projectId).getTasks().find(task => task.id === taskId);
 
         if (!(getProjectById(projectId).name == newProjectName)) {
@@ -160,13 +165,17 @@ const app = (function () {
         task.priority = newPriority;
         task.dueDate = newDueDate;
 
+        if (currentView != getProjectById(projectId).name) {
+            UI.displayTasksByDueDate(currentView);
+
+        } else UI.displayProject(getProjectById(projectId));
 
         // TARVITAAN CURRENT VIEW; ELI MISSÄ VIEWISSA TARKASTELEN PROJEKTIA / TASKEJA; JOTTA JOS VAIHDATA VIIKONPÄIVÄ VIEWISSÄ TASKIN TOISEEN PROJEKTIIN NIIN VIEWI SÄILYY SILTI VIIKONPÄIVÄSSÄ; EIKÄ SIIRRY VANHAN PROJEKTIN NÄKYMÄÄN JOSSA TASKI OLI. KIMURANTTIA!
-        if (getProjectById(projectId).name == "Default") {
-            if (isToday((parseISO(task.dueDate)))) UI.displayTasksByDueDate("Today");
-            else if (isThisWeek((parseISO(task.dueDate)))) UI.displayTasksByDueDate("This Week");
-            else UI.displayTasksByDueDate("Show All");
-        } else UI.displayProject(getProjectById(projectId));
+        // if (getProjectById(projectId).name == "Default") {
+        //     if (isToday((parseISO(task.dueDate)))) UI.displayTasksByDueDate("Today");
+        //     else if (isThisWeek((parseISO(task.dueDate)))) UI.displayTasksByDueDate("This Week");
+        //     else UI.displayTasksByDueDate("Show All");
+        // } else UI.displayProject(getProjectById(projectId));
         
 
 
