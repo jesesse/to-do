@@ -23,7 +23,7 @@ let projectPanel = document.querySelector('.nav-project-panel');
 navBar.addEventListener("click", (e) => {
     if (e.target.className == "tab") displayTasksByDueDate(e.target.textContent);
     if (e.target.className == "project") displayProject(getProjectById(e.target.id));
-    if (e.target.className == "delete-project") deleteProject(e.target.parentNode.id);
+    if (e.target.className == "delete-project") UIdeleteProject(e.target.parentNode.id);
     if (e.target.className == "add-project") toggleProjectCreationModal();
     if (e.target.className == "create-project") gatherDataToCreateProject();
 });
@@ -80,6 +80,11 @@ function toggleProjectCreationModal() {
     document.getElementById("project-name-input").value = "";
 }
 
+function UIdeleteProject(id){
+    deleteProject(id);
+    renderProjectPanel();
+    displayTasksByDueDate('Today');
+}
 
 function displayProject(project) {
     currentViewHeader.textContent = `Project: ${project.name}`;
@@ -89,7 +94,6 @@ function displayProject(project) {
 
 
 function displayTasksByDueDate(dueDate) {
-
     let tasks;
     if (dueDate == "Today") tasks = getTodayTasks();
     if (dueDate == "This Week") tasks = getThisWeekTasks();
@@ -151,10 +155,13 @@ function displayTasks(tasks) {
 
 
 function renderProjectPanel() {
+
     while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild)
 
-    for (let i = 0; i < getProjects().length; i++) {
-        if (getProjects()[i].name === "Default") continue;
+    let projects = getProjects();
+    console.log(projects);
+    for (let i = 0; i < projects.length; i++) {
+        if (projects[i].name === "Default") continue;
         let projectTab = document.createElement('div')
         let deleteProjectBtn = document.createElement('div');
         projectTab.classList.add('project');
