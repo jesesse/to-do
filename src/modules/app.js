@@ -12,36 +12,44 @@ import parseISO from "date-fns/parseISO";
 import { v4 as uuidv4 } from 'uuid';
 
 
-let _projectList = [];
+
 
 function loadProjects() {
-    //This is where there should be loading all the projects from localStorage, and if there is none, then create default Project:
-    createProject("Default");
+
+    localStorage.clear();
+    if (localStorage.length > 0) {
+        renderProjectPanel();
+        displayTasksByDueDate('Today');
+    } else {
+        let projectList = [];
+        localStorage.setItem("projectList", JSON.stringify(projectList));
+        createProject("Default");
+    }
 }
 
 
 function getProject(projectName) {
-    return _projectList.find(project => project.name == projectName);
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    return currentProjectList.find(project => project.name == projectName);
 }
 
 function getProjectById(projectId) {
-    return _projectList.find(project => project.id == projectId);
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    return currentProjectList.find(project => project.id == projectId);
 }
 
 function getProjects() {
-    return _projectList;
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    return currentProjectList;
+  
 }
-
-function getProjectTasks(project) {
-    return project.getTasks();
-}
-
 
 function getTodayTasks() {
     let todayTasks = [];
-    _projectList.forEach(project => {
-        for (let i = 0; i < project.getTasks().length; i++) {
-            if (isToday((parseISO(project.getTasks()[i].dueDate)))) todayTasks.push(project.getTasks()[i])
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    currentProjectList.forEach(project => {
+        for (let i = 0; i < project.tasks.length; i++) {
+            if (isToday((parseISO(project.tasks[i].dueDate)))) todayTasks.push(project.tasks[i])
         }
     });
     return todayTasks;
@@ -50,9 +58,10 @@ function getTodayTasks() {
 
 function getThisWeekTasks() {
     let thisWeekTasks = [];
-    _projectList.forEach(project => {
-        for (let i = 0; i < project.getTasks().length; i++) {
-            if (isThisWeek((parseISO(project.getTasks()[i].dueDate)))) thisWeekTasks.push(project.getTasks()[i])
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    currentProjectList.forEach(project => {
+        for (let i = 0; i < project.tasks.length; i++) {
+            if (isThisWeek((parseISO(project.tasks[i].dueDate)))) thisWeekTasks.push(project.tasks[i])
         }
     });
     return thisWeekTasks;
@@ -61,9 +70,10 @@ function getThisWeekTasks() {
 
 function getAllTasks() {
     let allTasks = [];
-    _projectList.forEach(project => {
-        for (let i = 0; i < project.getTasks().length; i++) {
-            allTasks.push(project.getTasks()[i])
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    currentProjectList.forEach(project => {
+        for (let i = 0; i < project.tasks.length; i++) {
+            allTasks.push(project.tasks[i])
         }
     });
     return allTasks;
@@ -79,8 +89,9 @@ function getAllTasks() {
 
 function createProject(projectName) {
     if (projectName == "") return;
-    for (let i = 0; i < _projectList.length; i++) {
-        if (_projectList[i].name === projectName) {
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    for (let i = 0; i < currentProjectList.length; i++) {
+        if (currentProjectList[i].name === projectName) {
             alert("cannot be same name");
             return;
         }
@@ -88,20 +99,27 @@ function createProject(projectName) {
 
     let id = uuidv4();
     let name = projectName;
-    let newProject = Project(id, name);
-    _projectList.push(newProject);
+    let tasks = [];
+    let newProject = Project(id, name, tasks);
+
+    currentProjectList.push(newProject);
+    localStorage.setItem("projectList", JSON.stringify(currentProjectList));
 
     renderProjectPanel();
+
     if (projectName === 'Default') displayTasksByDueDate('Today');
     else displayProject(newProject);
 }
 
 
-function deleteProject(projectName) {
-    let project = getProject(projectName);
-    _projectList.splice(_projectList.indexOf(project), 1);
+function deleteProject(projectId) {
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    let projectToDelete = currentProjectList.find(project => project.id === projectId);
+    currentProjectList.splice(currentProjectList.indexOf(projectToDelete), 1);
+    localStorage.removeItem("projectList");
+    localStorage.setItem("projectList", JSON.stringify(currentProjectList));
     renderProjectPanel();
-    displayTasksByDueDate("Today");
+    displayTasksByDueDate('Today');
 }
 
 
@@ -122,25 +140,43 @@ function createTask(title, priority, description, dueDate, currentView) {
         projectName = "Default";
     } else projectName = currentView.slice(9);
 
-
     if (!checkTitleValidity(projectName, title)) return;
 
-    let id = uuidv4();
-    let projectId = getProject(projectName).id;
-    let newTask = Task(id, projectId, title, description, priority, dueDate, projectName);
-    getProject(projectName).addTask(newTask);
+    let projectToAddTaskTo = getProject(projectName);
+    let taskId = uuidv4();
+    let projectId = projectToAddTaskTo.id;
+    let newTask = Task(taskId, projectId, title, description, priority, dueDate, projectName);
 
-    if (projectName == "Default") {
+    
+    //UPDATE LOCAL STORAGE PROJECT LIST WITH ADDED TASK: REMOVE THE WHOLE OLD LIST; THEN ADD THE SAME LIST WITH UPDATED PROJECT WITH THE NEW TASK
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    localStorage.removeItem("projectList");
+    let index = currentProjectList.indexOf(projectToAddTaskTo);
+    currentProjectList.splice(index, 1);
+    projectToAddTaskTo.tasks.push(newTask);
+    currentProjectList.push(projectToAddTaskTo);
+    localStorage.setItem("projectList", JSON.stringify(currentProjectList));
+
+
+    if (projectToAddTaskTo.name == "Default") {
         if (isToday((parseISO(newTask.dueDate)))) displayTasksByDueDate("Today");
         else if (isThisWeek((parseISO(newTask.dueDate)))) displayTasksByDueDate("This Week");
         else displayTasksByDueDate("Show All");
-    } else displayProject(getProject(projectName))
+    } else displayProject(projectToAddTaskTo)
+
 }
 
 
 function deleteTask(taskId, projectId, currentView) {
-    let taskToBeDeleted = getProjectById(projectId).getTasks().find(task => task.id === taskId);
-    getProjectById(projectId).deleteTask(taskToBeDeleted);
+    let taskToBeDeleted = getProjectById(projectId).tasks.find(task => task.id === taskId);
+    let projectToDeleteTaskFrom = getProjectById(projectId);
+    projectToDeleteTaskFrom.tasks.splice(projectToDeleteTaskFrom.tasks.indexOf(taskToBeDeleted), 1);
+
+    let currentProjectList = JSON.parse(localStorage.getItem("projectList"));
+    localStorage.removeItem("projectList");
+    currentProjectList.splice(currentProjectList.indexOf(projectToDeleteTaskFrom), 1);
+    currentProjectList.push(projectToDeleteTaskFrom);
+    localStorage.setItem("projectList", JSON.stringify(currentProjectList));
 
     if (currentView != "Today" &&
         currentView != "This Week" &&
@@ -196,8 +232,8 @@ function editTask(taskId, projectId, newTitle, newDescription, newPriority, newD
 
 function checkTitleValidity(projectName, title) {
     if (title == "") return false;
-    for (let i = 0; i < getProject(projectName).getTasks().length; i++) {
-        if (getProject(projectName).getTasks()[i].title === title) {
+    for (let i = 0; i < getProject(projectName).tasks.length; i++) {
+        if (getProject(projectName).tasks[i].title === title) {
             return false;
         }
     }
@@ -210,9 +246,8 @@ function checkTitleValidity(projectName, title) {
 
 export {
     loadProjects,
-    getProject,
+    getProjectById,
     getProjects,
-    getProjectTasks,
     deleteProject,
     getTodayTasks,
     getThisWeekTasks,

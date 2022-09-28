@@ -1,7 +1,6 @@
 import {
-    getProject,
+    getProjectById,
     getProjects,
-    getProjectTasks,
     deleteProject,
     getTodayTasks,
     getThisWeekTasks,
@@ -23,10 +22,10 @@ let projectPanel = document.querySelector('.nav-project-panel');
 
 navBar.addEventListener("click", (e) => {
     if (e.target.className == "tab") displayTasksByDueDate(e.target.textContent);
-    if (e.target.className == "project") displayProject(getProject(e.target.textContent));
+    if (e.target.className == "project") displayProject(getProjectById(e.target.id));
+    if (e.target.className == "delete-project") deleteProject(e.target.parentNode.id);
     if (e.target.className == "add-project") toggleProjectCreationModal();
     if (e.target.className == "create-project") gatherDataToCreateProject();
-    if (e.target.className == "delete-project") deleteProject(e.target.previousSibling.textContent);
 });
 
 
@@ -72,6 +71,7 @@ function toggleTaskCreationModal() {
     document.getElementById("dueDate").value = "";
 }
 
+
 function toggleProjectCreationModal() {
     let addProjectBtn = document.querySelector('.add-project');
     let projectModal = document.querySelector('.project-modal');
@@ -80,15 +80,16 @@ function toggleProjectCreationModal() {
     document.getElementById("project-name-input").value = "";
 }
 
+
 function displayProject(project) {
     currentViewHeader.textContent = `Project: ${project.name}`;
-    let projectTasks = getProjectTasks(project);
     toggleProjectDisplayStyle('project');
-    displayTasks(projectTasks);
+    displayTasks(project.tasks);
 }
 
 
 function displayTasksByDueDate(dueDate) {
+
     let tasks;
     if (dueDate == "Today") tasks = getTodayTasks();
     if (dueDate == "This Week") tasks = getThisWeekTasks();
@@ -146,18 +147,18 @@ function displayTasks(tasks) {
         if (tasks[i].priority === "medium") newTaskCard.querySelector('.priority-p').style.color = "#A7912A";
         if (tasks[i].priority === "high") newTaskCard.querySelector('.priority-p').style.color = "#9C2222";
     }
-
-
 }
 
 
 function renderProjectPanel() {
     while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild)
+
     for (let i = 0; i < getProjects().length; i++) {
         if (getProjects()[i].name === "Default") continue;
         let projectTab = document.createElement('div')
         let deleteProjectBtn = document.createElement('div');
         projectTab.classList.add('project');
+        projectTab.setAttribute('id', getProjects()[i].id);
         deleteProjectBtn.classList.add('delete-project');
         projectTab.textContent = getProjects()[i].name;
         projectTab.appendChild(deleteProjectBtn);
