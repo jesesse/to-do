@@ -1,4 +1,10 @@
+@font-face{
+    font-family: 'lexend';
+    src: url('../assets/fonts/LexendDeca-Light.ttf');
+}
+
 * {
+    font-family: 'lexend';
     color: white;
 }
 
@@ -137,9 +143,9 @@ body {
     width: 70px;
     height: 70px;
     margin: 20px 0px;
-    line-height: 70px;
+    line-height: 60px;
     border-radius: 50%;
-    font-size: 80px;
+    font-size: 70px;
     background-color: rgba(0, 255, 0, 0.276);
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.577);
 

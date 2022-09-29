@@ -96,7 +96,10 @@ function deleteProject(project) {
 
 
 function createTask(title, priority, description, dueDate, projectName) {
-    if (!validateTaskTitle(projectName, title)) return;
+    if (!validateTaskTitle(projectName, title)) {
+        alert("Project already has a task of the same name")
+        return;
+    }
     let taskId = uuidv4();
     let projectId = getProjectByName(projectName).id;
     let newTask = Task(taskId, projectId, title, description, priority, dueDate, projectName);
