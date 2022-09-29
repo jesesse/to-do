@@ -74,14 +74,8 @@ function saveProject(project) {
     localStorage.setItem(project.id, JSON.stringify(project));
 }
 
-function deleteProjectFromStorage(projectId) {
-    for (let i = 0; i < localStorage.length; i++) {
-        let project = JSON.parse(localStorage.getItem(localStorage.key(i)));
-        if (project.id === projectId) {
-            localStorage.removeItem(project.id);
-            break;
-        }
-    }
+function deleteProjectFromStorage(project) {
+    localStorage.removeItem(project.id);
 }
 
 

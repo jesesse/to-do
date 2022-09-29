@@ -72,7 +72,8 @@ function UIcreateProject() {
 
 
 function UIdeleteProject(id) {
-    deleteProject(id);
+    let project = getProjectById(id);
+    deleteProject(project);
     renderProjectPanel();
     displayTasksByDueDate('Today');
 }
@@ -139,6 +140,9 @@ function gatherDataToEditTask(taskCard) {
     let editedDueDate = taskCard.querySelector(".edit-due-date").value;
     let editedProjectName = taskCard.querySelector(".edit-project").value;
     if (editedProjectName === '(empty)') editedProjectName = 'Default'
+
+    editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName);
+
     let currentView = currentViewHeader.textContent;
     if (currentView != "Today" &&
         currentView != "This Week" &&
@@ -146,7 +150,10 @@ function gatherDataToEditTask(taskCard) {
         currentView = currentView.slice(9);
     }
 
-    editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName, currentView);
+    if (currentView != getProjectById(projectId).name) {
+        displayTasksByDueDate(currentView);
+
+    } else displayProject(getProjectById(projectId));
 }
 
 
