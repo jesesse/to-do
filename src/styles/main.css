@@ -138,7 +138,7 @@ body {
     gap: 20px;
 }
 
-.add-task {
+.add-task-btn {
     text-align: center;
     width: 70px;
     height: 70px;
@@ -151,7 +151,7 @@ body {
 
 }
 
-.add-task:hover {
+.add-task-btn:hover {
     cursor: pointer;
     background-color: rgba(0, 255, 0, 0.349);
 }

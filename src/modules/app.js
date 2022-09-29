@@ -20,7 +20,7 @@ import {
 
 
 function loadProjects() {
-
+    localStorage.clear();
     if (localStorage.length > 0) {
         renderProjectPanel();
         displayTasksByDueDate('Today');

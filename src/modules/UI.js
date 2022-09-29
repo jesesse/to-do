@@ -20,15 +20,9 @@ import {
 
 
 let mainView = document.querySelector('.main');
-let projectView = document.querySelector('.project-view');
-let taskView = document.querySelector('.task-view');
 let currentViewHeader = document.querySelector('.current-view');
 let navBar = document.querySelector('.nav-bar');
 let projectPanel = document.querySelector('.nav-project-panel');
-
-
-
-
 
 
 
@@ -42,7 +36,7 @@ navBar.addEventListener("click", (e) => {
 
 
 mainView.addEventListener("click", (e) => {
-    if (e.target.className == "add-task") toggleTaskCreationModal();
+    if (e.target.className == "add-task-btn") toggleTaskCreationModal();
     if (e.target.className == "create-task") gatherDataToCreateTask();
     if (e.target.className == "task-card") expandTask(e.target);
     else if (e.target.className == "task-card task-card-expanded") gatherDataToEditTask(e.target);
@@ -169,13 +163,33 @@ function gatherDataToEditTask(taskCard) {
 
 
 function displayProject(project) {
-    currentViewHeader.textContent = `Project: ${project.name}`;
-    toggleProjectDisplayStyle('project');
-    displayTasks(project.tasks);
+    while (mainView.lastChild) {
+        mainView.removeChild(mainView.lastChild);
+    }
+
+    let projectContainer = document.createElement('div');
+    let projectHeader = document.createElement('h1');
+    let addTaskBtn = document.createElement('div');
+
+    projectContainer.classList.add('project-container');
+    projectHeader.classList.add('project-header');
+    addTaskBtn.classList.add('add-task-btn')
+
+    projectHeader.textContent = `Project: ${project.name}`;
+    addTaskBtn.textContent = '+';
+    projectContainer.appendChild(projectHeader);
+    projectContainer.appendChild(addTaskBtn)
+    mainView.appendChild(projectContainer);
+
+    displayTasks(project.tasks, projectContainer);
 }
 
 
-function displayTasks(tasks) {
+function displayTasks(tasks, view) {
+  
+    let taskView = document.createElement('div');
+    view.appendChild(taskView);
+
     while (taskView.lastChild) {
         taskView.removeChild(taskView.lastChild);
     }
@@ -215,7 +229,7 @@ function displayTasks(tasks) {
                 </div>
                 <div class="delete-task"></div>
             `
-        taskView.appendChild(newTaskCard);
+            taskView.appendChild(newTaskCard);
 
         if (tasks[i].priority === "low") newTaskCard.querySelector('.priority-p').style.color = "#85A72A";
         if (tasks[i].priority === "medium") newTaskCard.querySelector('.priority-p').style.color = "#A7912A";
@@ -229,9 +243,20 @@ function displayTasksByDueDate(dueDate) {
     if (dueDate == "Today") tasks = getTodayTasks();
     if (dueDate == "This Week") tasks = getThisWeekTasks();
     if (dueDate == "Show All") tasks = getAllTasks();
-    currentViewHeader.textContent = dueDate;
-    toggleProjectDisplayStyle('tab');
-    displayTasks(tasks);
+
+    while (mainView.lastChild) {
+        mainView.removeChild(mainView.lastChild);
+    }
+
+    let dueDateView = document.createElement('div');
+    let dueDateViewHeader = document.createElement('h1');
+    dueDateView.classList.add('due-date-view');
+    dueDateViewHeader.classList.add('due-date-view-header');
+    dueDateViewHeader.textContent = dueDate;
+    dueDateView.appendChild(dueDateViewHeader);
+    mainView.appendChild(dueDateView);
+
+    displayTasks(tasks, dueDateView);
 }
 
 
@@ -336,8 +361,8 @@ function expandTask(taskCard) {
 
 
 function toggleTaskCreationModal() {
-    let addTaskBtn = document.querySelector('.add-task');
-    let taskModal = document.querySelector('.task-modal');
+    let addTaskBtn = document.querySelector('.add-task-btn');
+    let taskModal = document.querySelector('.task-modal hidden');
     addTaskBtn.classList.toggle('hidden');
     taskModal.classList.toggle('hidden')
     document.getElementById("title").value = "";
@@ -354,15 +379,6 @@ function toggleProjectCreationModal() {
 }
 
 
-
-function toggleProjectDisplayStyle(displayStyle) {
-    if (displayStyle == 'project') {
-        if (projectView.className == 'project-view') projectView.classList.add('project-display-style')
-    }
-    if (displayStyle == 'tab') {
-        if (projectView.className == 'project-view project-display-style') projectView.classList.remove('project-display-style');
-    }
-}
 
 
 export {
