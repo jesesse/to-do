@@ -1,5 +1,9 @@
+import isToday from "date-fns/isToday";
+import isThisWeek from "date-fns/isThisWeek";
+import parseISO from "date-fns/parseISO";
 import {
     getProjectById,
+    getProjectByName,
     getProjects,
     deleteProject,
     getTodayTasks,
@@ -12,6 +16,9 @@ import {
 } from "./app";
 
 
+
+
+
 let mainView = document.querySelector('.main');
 let projectView = document.querySelector('.project-view');
 let taskView = document.querySelector('.task-view');
@@ -20,12 +27,17 @@ let navBar = document.querySelector('.nav-bar');
 let projectPanel = document.querySelector('.nav-project-panel');
 
 
+
+
+
+
+
 navBar.addEventListener("click", (e) => {
     if (e.target.className == "tab") displayTasksByDueDate(e.target.textContent);
     if (e.target.className == "project") displayProject(getProjectById(e.target.id));
     if (e.target.className == "delete-project") UIdeleteProject(e.target.parentNode.id);
-    if (e.target.className == "add-project") toggleProjectCreationModal();
-    if (e.target.className == "create-project") gatherDataToCreateProject();
+    if (e.target.className == "create-project") UIcreateProject();
+    if (e.target.className == "add-project") toggleProjectCreationModal();    
 });
 
 
@@ -34,13 +46,45 @@ mainView.addEventListener("click", (e) => {
     if (e.target.className == "create-task") gatherDataToCreateTask();
     if (e.target.className == "task-card") expandTask(e.target);
     else if (e.target.className == "task-card task-card-expanded") gatherDataToEditTask(e.target);
-    if (e.target.className == "delete-task") {
-        let taskId = e.target.parentNode.querySelector('.task-id').textContent;
-        let projectId = e.target.parentNode.querySelector('.project-id').textContent;
-        let currentView = currentViewHeader.textContent;
-        deleteTask(taskId, projectId, currentView);
-    }
+    if (e.target.className == "delete-task") UIdeleteTask(e)
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+function UIcreateProject() {
+    let projectName = document.getElementById('project-name-input').value;
+    createProject(projectName);
+    let project = getProjectByName(projectName);
+    renderProjectPanel();
+    displayProject(project);
+    toggleProjectCreationModal();
+}
+
+
+function UIdeleteProject(id) {
+    deleteProject(id);
+    renderProjectPanel();
+    displayTasksByDueDate('Today');
+}
+
+
+
+
+
+
+
+
+
 
 
 function gatherDataToCreateTask() {
@@ -49,42 +93,73 @@ function gatherDataToCreateTask() {
     let description = "";
     let dueDate = document.getElementById('dueDate').value;
     let currentView = document.querySelector('.current-view').textContent;
-    createTask(title, priority, description, dueDate, currentView);
+    let projectName;
+    if (currentView == "Today" ||
+        currentView == "This Week" ||
+        currentView == "Show All") {
+        projectName = "Default";
+    } else projectName = currentView.slice(9);
+
+    createTask(title, priority, description, dueDate, projectName);
+
+    if (projectName == "Default") {
+        if (isToday((parseISO(dueDate)))) displayTasksByDueDate("Today");
+        else if (isThisWeek((parseISO(dueDate)))) displayTasksByDueDate("This Week");
+        else displayTasksByDueDate("Show All");
+    } else displayProject(getProjectByName(projectName))
+
     toggleTaskCreationModal();
 }
 
 
+function UIdeleteTask(e) {
+    let taskId = e.target.parentNode.querySelector('.task-id').textContent;
+    let projectId = e.target.parentNode.querySelector('.project-id').textContent;
+    let currentView = currentViewHeader.textContent;
+    deleteTask(taskId, projectId, currentView);
+    if (currentView != "Today" &&
+        currentView != "This Week" &&
+        currentView != "Show All") {
+        currentView = currentView.slice(9);
+    }
 
-function gatherDataToCreateProject() {
-    let projectName = document.getElementById('project-name-input').value;
-    createProject(projectName);
-    toggleProjectCreationModal();
+    if (currentView != getProjectById(projectId).name) {
+        displayTasksByDueDate(currentView);
+    } else displayProject(getProjectById(projectId));
+
 }
 
 
-function toggleTaskCreationModal() {
-    let addTaskBtn = document.querySelector('.add-task');
-    let taskModal = document.querySelector('.task-modal');
-    addTaskBtn.classList.toggle('hidden');
-    taskModal.classList.toggle('hidden')
-    document.getElementById("title").value = "";
-    document.getElementById("dueDate").value = "";
+function gatherDataToEditTask(taskCard) {
+    let taskId = taskCard.querySelector(".task-id").textContent;
+    let projectId = taskCard.querySelector(".project-id").textContent;
+    let editedTitle = taskCard.querySelector(".edit-title").value;
+    let editedDescription = taskCard.querySelector(".edit-description").value;
+    let editedPriority = taskCard.querySelector(".edit-priority").value;
+    let editedDueDate = taskCard.querySelector(".edit-due-date").value;
+    let editedProjectName = taskCard.querySelector(".edit-project").value;
+    if (editedProjectName === '(empty)') editedProjectName = 'Default'
+    let currentView = currentViewHeader.textContent;
+    if (currentView != "Today" &&
+        currentView != "This Week" &&
+        currentView != "Show All") {
+        currentView = currentView.slice(9);
+    }
+
+    editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName, currentView);
 }
 
 
-function toggleProjectCreationModal() {
-    let addProjectBtn = document.querySelector('.add-project');
-    let projectModal = document.querySelector('.project-modal');
-    addProjectBtn.classList.toggle('hidden');
-    projectModal.classList.toggle('hidden');
-    document.getElementById("project-name-input").value = "";
-}
 
-function UIdeleteProject(id){
-    deleteProject(id);
-    renderProjectPanel();
-    displayTasksByDueDate('Today');
-}
+
+
+
+
+
+
+
+
+
 
 function displayProject(project) {
     currentViewHeader.textContent = `Project: ${project.name}`;
@@ -93,19 +168,7 @@ function displayProject(project) {
 }
 
 
-function displayTasksByDueDate(dueDate) {
-    let tasks;
-    if (dueDate == "Today") tasks = getTodayTasks();
-    if (dueDate == "This Week") tasks = getThisWeekTasks();
-    if (dueDate == "Show All") tasks = getAllTasks();
-    currentViewHeader.textContent = dueDate;
-    toggleProjectDisplayStyle('tab');
-    displayTasks(tasks);
-}
-
-
 function displayTasks(tasks) {
-
     while (taskView.lastChild) {
         taskView.removeChild(taskView.lastChild);
     }
@@ -154,27 +217,36 @@ function displayTasks(tasks) {
 }
 
 
-function renderProjectPanel() {
+function displayTasksByDueDate(dueDate) {
+    let tasks;
+    if (dueDate == "Today") tasks = getTodayTasks();
+    if (dueDate == "This Week") tasks = getThisWeekTasks();
+    if (dueDate == "Show All") tasks = getAllTasks();
+    currentViewHeader.textContent = dueDate;
+    toggleProjectDisplayStyle('tab');
+    displayTasks(tasks);
+}
 
+
+
+
+
+function renderProjectPanel() {
     while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild)
 
     let projects = getProjects();
-    console.log(projects);
     for (let i = 0; i < projects.length; i++) {
         if (projects[i].name === "Default") continue;
         let projectTab = document.createElement('div')
         let deleteProjectBtn = document.createElement('div');
         projectTab.classList.add('project');
         projectTab.setAttribute('id', getProjects()[i].id);
-        deleteProjectBtn.classList.add('delete-project');
         projectTab.textContent = getProjects()[i].name;
+        deleteProjectBtn.classList.add('delete-project');
         projectTab.appendChild(deleteProjectBtn);
         projectPanel.appendChild(projectTab);
     }
 }
-
-
-
 
 
 
@@ -246,24 +318,35 @@ function expandTask(taskCard) {
 }
 
 
-function gatherDataToEditTask(taskCard) {
-    let taskId = taskCard.querySelector(".task-id").textContent;
-    let projectId = taskCard.querySelector(".project-id").textContent;
-    let editedTitle = taskCard.querySelector(".edit-title").value;
-    let editedDescription = taskCard.querySelector(".edit-description").value;
-    let editedPriority = taskCard.querySelector(".edit-priority").value;
-    let editedDueDate = taskCard.querySelector(".edit-due-date").value;
-    let editedProjectName = taskCard.querySelector(".edit-project").value;
-    if (editedProjectName === '(empty)') editedProjectName = 'Default'
-    let currentView = currentViewHeader.textContent;
-    if (currentView != "Today" &&
-        currentView != "This Week" &&
-        currentView != "Show All") {
-        currentView = currentView.slice(9);
-    }
-    
-    editTask(taskId, projectId, editedTitle, editedDescription, editedPriority, editedDueDate, editedProjectName, currentView);
+
+
+
+
+
+
+
+
+
+
+function toggleTaskCreationModal() {
+    let addTaskBtn = document.querySelector('.add-task');
+    let taskModal = document.querySelector('.task-modal');
+    addTaskBtn.classList.toggle('hidden');
+    taskModal.classList.toggle('hidden')
+    document.getElementById("title").value = "";
+    document.getElementById("dueDate").value = "";
 }
+
+
+function toggleProjectCreationModal() {
+    let addProjectBtn = document.querySelector('.add-project');
+    let projectModal = document.querySelector('.project-modal');
+    addProjectBtn.classList.toggle('hidden');
+    projectModal.classList.toggle('hidden');
+    document.getElementById("project-name-input").value = "";
+}
+
+
 
 function toggleProjectDisplayStyle(displayStyle) {
     if (displayStyle == 'project') {
