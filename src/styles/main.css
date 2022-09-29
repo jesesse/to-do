@@ -1,4 +1,4 @@
-@font-face{
+@font-face {
     font-family: 'lexend';
     src: url('../assets/fonts/LexendDeca-Light.ttf');
 }
@@ -42,7 +42,7 @@ body {
     flex-flow: column;
 }
 
-.tabs{
+.tabs {
     flex: 1;
     padding: 40px;
     margin-bottom: 20px;
@@ -69,7 +69,8 @@ body {
     padding: 0px 40px;
 }
 
-.project, .tab {
+.project,
+.tab {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -94,7 +95,7 @@ body {
     filter: invert(100%)
 }
 
-.delete-project:hover{
+.delete-project:hover {
     cursor: pointer;
     filter: invert(40%) sepia(89%) saturate(7199%) hue-rotate(352deg) brightness(97%) contrast(131%);
 }
@@ -134,11 +135,11 @@ body {
 
 .task-view {
     display: flex;
-    flex-flow: column   ;
+    flex-flow: column;
     gap: 20px;
 }
 
-.add-task-btn {
+.add-task {
     text-align: center;
     width: 70px;
     height: 70px;
@@ -151,7 +152,7 @@ body {
 
 }
 
-.add-task-btn:hover {
+.add-task:hover {
     cursor: pointer;
     background-color: rgba(0, 255, 0, 0.349);
 }
@@ -176,26 +177,26 @@ body {
 }
 
 
-.task-card > div {
+.task-card>div {
     cursor: default;
     display: flex;
     gap: 10px;
 }
 
-.task-card > .task-id {
+.task-card>.task-id {
     display: none;
 }
 
-.task-card > .project-id {
+.task-card>.project-id {
     display: none;
 }
 
 
-.task-card >.title>label {
+.task-card>.title>label {
     display: none;
 }
 
-.task-card > .description {
+.task-card>.description {
     display: none;
 }
 
@@ -212,7 +213,7 @@ body {
     filter: invert(100%);
 }
 
-.delete-task:hover{
+.delete-task:hover {
     cursor: pointer;
     filter: invert(40%) sepia(89%) saturate(7199%) hue-rotate(352deg) brightness(97%) contrast(131%);
 }
@@ -222,34 +223,36 @@ body {
     display: grid;
     padding: 50px;
     gap: 20px;
+    
 }
 
-.task-card-expanded >.task-id {
+.task-card-expanded>.task-id {
     display: none;
 }
 
-.task-card-expanded >.project-id {
+.task-card-expanded>.project-id {
     display: none;
 }
 
-.task-card-expanded >.title>label {
+.task-card-expanded>.title>label {
     display: flex;
 }
 
-.task-card-expanded >.description {
+.task-card-expanded>.description {
     display: flex;
 }
 
-.task-card-expanded > div {
+.task-card-expanded>div {
     display: flex;
     gap: 10px
 }
 
-.task-card-expanded > label, p {
+.task-card-expanded>label,
+p {
     margin: 0;
 }
 
-.task-card-expanded > div > p {
+.task-card-expanded>div>p {
     min-width: 100px;
     border-bottom: 1px solid black;
 }
@@ -264,7 +267,7 @@ body {
 
 
 
-.project-modal{
+.project-modal {
     height: 72px;
     display: flex;
     flex-flow: column;
@@ -272,7 +275,7 @@ body {
     align-items: center;
 }
 
-.create-project{
+.create-project {
     cursor: pointer;
     text-align: center;
     width: 50%;
@@ -287,7 +290,7 @@ body {
     background-color: rgba(0, 255, 0, 0.349);
 }
 
-.task-modal{
+.task-modal {
     display: flex;
     gap: 50px;
     border-radius: 10px;
@@ -297,7 +300,7 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.696);
 }
 
-.create-task{
+.create-task {
     cursor: pointer;
     text-align: center;
     border-radius: 10px;
@@ -311,7 +314,9 @@ body {
     background-color: rgba(0, 255, 0, 0.349);
 }
 
-input, select, option{
+input,
+select,
+option {
     font-size: 1.1rem;
     border-radius: 5px;
     color: black;

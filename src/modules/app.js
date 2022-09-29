@@ -20,7 +20,7 @@ import {
 
 
 function loadProjects() {
-    localStorage.clear();
+
     if (localStorage.length > 0) {
         renderProjectPanel();
         displayTasksByDueDate('Today');
@@ -140,7 +140,7 @@ function editTask(taskId, projectId, newTitle, newDescription, newPriority, newD
         deleteTask(tasktoBeEdited.id, projectId);
         project = newProject;
     }
-    
+
     saveProject(project);
 }
 
@@ -186,4 +186,3 @@ export {
     deleteTask,
     editTask
 }
-

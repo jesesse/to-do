@@ -20,9 +20,15 @@ import {
 
 
 let mainView = document.querySelector('.main');
+let projectView = document.querySelector('.project-view');
+let taskView = document.querySelector('.task-view');
 let currentViewHeader = document.querySelector('.current-view');
 let navBar = document.querySelector('.nav-bar');
 let projectPanel = document.querySelector('.nav-project-panel');
+
+
+
+
 
 
 
@@ -31,12 +37,12 @@ navBar.addEventListener("click", (e) => {
     if (e.target.className == "project") displayProject(getProjectById(e.target.id));
     if (e.target.className == "delete-project") UIdeleteProject(e.target.parentNode.id);
     if (e.target.className == "create-project") UIcreateProject();
-    if (e.target.className == "add-project") toggleProjectCreationModal();    
+    if (e.target.className == "add-project") toggleProjectCreationModal();
 });
 
 
 mainView.addEventListener("click", (e) => {
-    if (e.target.className == "add-task-btn") toggleTaskCreationModal();
+    if (e.target.className == "add-task") toggleTaskCreationModal();
     if (e.target.className == "create-task") gatherDataToCreateTask();
     if (e.target.className == "task-card") expandTask(e.target);
     else if (e.target.className == "task-card task-card-expanded") gatherDataToEditTask(e.target);
@@ -152,84 +158,22 @@ function gatherDataToEditTask(taskCard) {
 
 
 
-
-
-
-
-
-
-
-
-
-
 function displayProject(project) {
-    while (mainView.lastChild) {
-        mainView.removeChild(mainView.lastChild);
-    }
-
-    let projectContainer = document.createElement('div');
-    let projectHeader = document.createElement('h1');
-    let addTaskBtn = document.createElement('div');
-
-    projectContainer.classList.add('project-container');
-    projectHeader.classList.add('project-header');
-    addTaskBtn.classList.add('add-task-btn')
-
-    projectHeader.textContent = `Project: ${project.name}`;
-    addTaskBtn.textContent = '+';
-    projectContainer.appendChild(projectHeader);
-    projectContainer.appendChild(addTaskBtn)
-    mainView.appendChild(projectContainer);
-
-    displayTasks(project.tasks, projectContainer);
+    currentViewHeader.textContent = `Project: ${project.name}`;
+    toggleProjectDisplayStyle('project');
+    displayTasks(project.tasks);
 }
 
 
-function displayTasks(tasks, view) {
-  
-    let taskView = document.createElement('div');
-    view.appendChild(taskView);
 
-    while (taskView.lastChild) {
-        taskView.removeChild(taskView.lastChild);
-    }
+function displayTasks(tasks) {
+    while (taskView.lastChild) taskView.removeChild(taskView.lastChild);
 
     if (tasks.length == 0) taskView.textContent = "No tasks... ";
 
     for (let i = 0; i < tasks.length; i++) {
-        let newTaskCard = document.createElement('div');
-        newTaskCard.classList.add('task-card')
-
-        let projectName;
-        if (tasks[i].projectName == "Default") projectName = "";
-        else projectName = tasks[i].projectName;
-
-        newTaskCard.innerHTML =
-            `<div class="task-id">${tasks[i].id}</div>
-                <div class="project-id">${tasks[i].projectId}</div>
-                <div class="title">
-                    <label class="title-label"></label>
-                    <p class="title-p">${tasks[i].title}</p>
-                </div>
-                <div class="priority">
-                    <label class="priority-label">Priority:</label>
-                    <p class="priority-p">${tasks[i].priority}</p>
-                </div>    
-                <div class="due-date">
-                    <label class="due-date-label">Due Date:</label>
-                    <p class="due-date-p">${tasks[i].dueDate}</p>
-                </div>
-                <div class="project-name">
-                    <label class="project-name-label">Project:</label>
-                    <p class="project-name-p">${projectName}</p>
-                </div>
-                <div class="description">
-                    <label class="description-label"></label>
-                    <p class="description-p">${tasks[i].description}</p>
-                </div>
-                <div class="delete-task"></div>
-            `
-            taskView.appendChild(newTaskCard);
+        let newTaskCard = createTaskCard(tasks[i]);
+        taskView.appendChild(newTaskCard);
 
         if (tasks[i].priority === "low") newTaskCard.querySelector('.priority-p').style.color = "#85A72A";
         if (tasks[i].priority === "medium") newTaskCard.querySelector('.priority-p').style.color = "#A7912A";
@@ -243,20 +187,9 @@ function displayTasksByDueDate(dueDate) {
     if (dueDate == "Today") tasks = getTodayTasks();
     if (dueDate == "This Week") tasks = getThisWeekTasks();
     if (dueDate == "Show All") tasks = getAllTasks();
-
-    while (mainView.lastChild) {
-        mainView.removeChild(mainView.lastChild);
-    }
-
-    let dueDateView = document.createElement('div');
-    let dueDateViewHeader = document.createElement('h1');
-    dueDateView.classList.add('due-date-view');
-    dueDateViewHeader.classList.add('due-date-view-header');
-    dueDateViewHeader.textContent = dueDate;
-    dueDateView.appendChild(dueDateViewHeader);
-    mainView.appendChild(dueDateView);
-
-    displayTasks(tasks, dueDateView);
+    currentViewHeader.textContent = dueDate;
+    toggleProjectDisplayStyle('tab');
+    displayTasks(tasks);
 }
 
 
@@ -361,8 +294,8 @@ function expandTask(taskCard) {
 
 
 function toggleTaskCreationModal() {
-    let addTaskBtn = document.querySelector('.add-task-btn');
-    let taskModal = document.querySelector('.task-modal hidden');
+    let addTaskBtn = document.querySelector('.add-task');
+    let taskModal = document.querySelector('.task-modal');
     addTaskBtn.classList.toggle('hidden');
     taskModal.classList.toggle('hidden')
     document.getElementById("title").value = "";
@@ -376,6 +309,58 @@ function toggleProjectCreationModal() {
     addProjectBtn.classList.toggle('hidden');
     projectModal.classList.toggle('hidden');
     document.getElementById("project-name-input").value = "";
+}
+
+
+
+function toggleProjectDisplayStyle(displayStyle) {
+    if (displayStyle == 'project') {
+        if (projectView.className == 'project-view') projectView.classList.add('project-display-style')
+    }
+    if (displayStyle == 'tab') {
+        if (projectView.className == 'project-view project-display-style') projectView.classList.remove('project-display-style');
+    }
+}
+
+
+
+
+
+
+function createTaskCard(task) {
+    let newTaskCard = document.createElement('div');
+    newTaskCard.classList.add('task-card')
+
+    let projectName;
+    if (task.projectName == "Default") projectName = "";
+    else projectName = task.projectName;
+
+    newTaskCard.innerHTML =
+        `       <div class="task-id">${task.id}</div>
+                <div class="project-id">${task.projectId}</div>
+                <div class="title">
+                    <label class="title-label"></label>
+                    <p class="title-p">${task.title}</p>
+                </div>
+                <div class="priority">
+                    <label class="priority-label">Priority:</label>
+                    <p class="priority-p">${task.priority}</p>
+                </div>    
+                <div class="due-date">
+                    <label class="due-date-label">Due Date:</label>
+                    <p class="due-date-p">${task.dueDate}</p>
+                </div>
+                <div class="project-name">
+                    <label class="project-name-label">Project:</label>
+                    <p class="project-name-p">${projectName}</p>
+                </div>
+                <div class="description">
+                    <label class="description-label"></label>
+                    <p class="description-p">${task.description}</p>
+                </div>
+                <div class="delete-task"></div>
+            `
+    return newTaskCard;
 }
 
 
