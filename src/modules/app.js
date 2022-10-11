@@ -21,11 +21,13 @@ import {
 
 function loadProjects() {
 
+   
     if (localStorage.length > 0) {
         renderProjectPanel();
         displayTasksByDueDate('Today');
     } else {
         createProject("Default");
+        createProject("Project 1");
         renderProjectPanel();
         displayTasksByDueDate('Today');
     }

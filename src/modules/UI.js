@@ -30,10 +30,9 @@ let projectPanel = document.querySelector('.nav-project-panel');
 
 
 
-
-
 navBar.addEventListener("click", (e) => {
-    if (e.target.className == "tab") displayTasksByDueDate(e.target.textContent);
+    if (e.target.className == "tab") displayTasksByDueDate(e.target.querySelector('.due-date').textContent);
+    if (e.target.className == "due-date") displayTasksByDueDate(e.target.textContent);
     if (e.target.className == "project") displayProject(getProjectById(e.target.id));
     if (e.target.className == "delete-project") UIdeleteProject(e.target.parentNode.id);
     if (e.target.className == "create-project") UIcreateProject();
@@ -179,6 +178,8 @@ function displayTasks(tasks) {
         if (tasks[i].priority === "medium") newTaskCard.querySelector('.priority-p').style.color = "#A7912A";
         if (tasks[i].priority === "high") newTaskCard.querySelector('.priority-p').style.color = "#9C2222";
     }
+    updateTabTaskAmounts();
+
 }
 
 
@@ -190,6 +191,8 @@ function displayTasksByDueDate(dueDate) {
     currentViewHeader.textContent = dueDate;
     toggleProjectDisplayStyle('tab');
     displayTasks(tasks);
+    updateTabTaskAmounts();
+
 }
 
 
@@ -198,7 +201,7 @@ function displayTasksByDueDate(dueDate) {
 
 function renderProjectPanel() {
     while (projectPanel.lastChild) projectPanel.removeChild(projectPanel.lastChild)
-
+    
     let projects = getProjects();
     for (let i = 0; i < projects.length; i++) {
         if (projects[i].name === "Default") continue;
@@ -211,6 +214,7 @@ function renderProjectPanel() {
         projectTab.appendChild(deleteProjectBtn);
         projectPanel.appendChild(projectTab);
     }
+    updateTabTaskAmounts();
 }
 
 
@@ -361,6 +365,13 @@ function createTaskCard(task) {
                 <div class="delete-task"></div>
             `
     return newTaskCard;
+}
+
+
+function updateTabTaskAmounts(){
+    document.querySelector('.today-task-amount').textContent = `(${getTodayTasks().length})`;
+    document.querySelector('.this-week-task-amount').textContent = `(${getThisWeekTasks().length})`;
+    document.querySelector('.show-all-task-amount').textContent = `(${getAllTasks().length})`;
 }
 
 
