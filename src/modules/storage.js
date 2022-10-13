@@ -2,7 +2,7 @@ import isToday from "date-fns/isToday";
 import isThisWeek from "date-fns/isThisWeek";
 import parseISO from "date-fns/parseISO";
 
-function getProjectFromStorageByName(projectName) {
+function getProjectByName(projectName) {
     let project;
     for (let i = 0; i < localStorage.length; i++) {
         let possibleProject = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -15,7 +15,7 @@ function getProjectFromStorageByName(projectName) {
 }
 
 
-function getProjectFromStorageById(projectId) {
+function getProjectById(projectId) {
     let project;
     for (let i = 0; i < localStorage.length; i++) {
         let possibleProject = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -27,7 +27,7 @@ function getProjectFromStorageById(projectId) {
     return project;
 }
 
-function getAllProjectsFromStorage() {
+function getProjects() {
     let projectList = [];
     for (let i = 0; i < localStorage.length; i++) {
         let project = JSON.parse(localStorage.getItem(localStorage.key(i)));
@@ -74,17 +74,17 @@ function saveProject(project) {
     localStorage.setItem(project.id, JSON.stringify(project));
 }
 
-function deleteProjectFromStorage(project) {
-    localStorage.removeItem(project.id);
+function deleteProjectFromStorage(projectId) {
+    localStorage.removeItem(projectId);
 }
 
 
 
 
 export {
-    getProjectFromStorageByName,
-    getProjectFromStorageById,
-    getAllProjectsFromStorage,
+    getProjectByName,
+    getProjectById,
+    getProjects,
     getTodayTasksFromStorage,
     getThisWeekTasksFromStorage,
     getAllTasksFromStorage,
